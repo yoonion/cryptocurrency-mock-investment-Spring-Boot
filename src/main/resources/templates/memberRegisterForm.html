@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans KR', sans-serif; }
+        .container {
+            max-width: 560px;
+        }
+        .field-error {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <form action="/member/register" th:action th:object="${memberRegisterForm}" method="post" class="p-5">
+            <h1>회원가입</h1><br><br>
+            <div class="mb-3">
+                <label for="username" class="form-label">* 이름</label>
+                <input type="text" class="form-control" th:field="*{username}" id="username">
+                <div class="field-error" th:errors="*{username}">이름 오류</div>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">* 로그인ID (email)</label>
+                <input type="text" class="form-control" th:field="*{email}" id="email" placeholder="example@example.com">
+<!--                <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>-->
+                <div class="field-error" th:errors="*{email}">ID(이메일) 오류</div>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">* 비밀번호</label>
+                <input type="password" class="form-control" th:field="*{password}" id="password">
+                <div class="field-error" th:errors="*{password}">비밀번호 오류</div>
+            </div>
+            <div class="mb-3">
+                <label for="password2" class="form-label">* 비밀번호 확인</label>
+                <input type="password" class="form-control" th:field="*{password2}" id="password2">
+                <div th:if="${#fields.hasErrors('password2')}" class="field-error" th:errors="*{password2}">비밀번호 오류</div>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</body>
+
+</html>

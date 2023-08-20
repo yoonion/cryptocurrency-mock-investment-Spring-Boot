@@ -2,17 +2,15 @@ package site.bitrun.cryptocurrency.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Repository;
-import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import site.bitrun.cryptocurrency.domain.Member;
+import site.bitrun.cryptocurrency.dto.MemberRegisterForm;
 import site.bitrun.cryptocurrency.repository.MemberRepository;
-import site.bitrun.cryptocurrency.repository.MemoryMemberRepository;
 import site.bitrun.cryptocurrency.service.MemberService;
-
-import java.util.Map;
 
 @Controller
 public class BasicController {
@@ -34,23 +32,26 @@ public class BasicController {
 
     // 회원가입 view
     @GetMapping("/member/register")
-    public String memberRegisterForm() {
-        return "memberRegister";
+    public String memberRegisterForm(@ModelAttribute MemberRegisterForm memberRegisterForm) {
+        return "memberRegisterForm";
     }
 
     // 회원가입
     @PostMapping("/member/register")
-    public String memberRegister(
-            @RequestParam String username,
-            @RequestParam String email,
-            @RequestParam String password) {
+    public String memberRegister(@Validated @ModelAttribute MemberRegisterForm memberRegisterForm, BindingResult bindingResult) {
 
-        Member member = new Member(1L, username, email, password);
-        memberService.memberRegister(member);
+        if (bindingResult.hasErrors()) {
+            return "memberRegisterForm";
+        }
 
-        System.out.println("member = " + member.toString());
-        Map<Long, Member> nowMember = MemoryMemberRepository.store;
-        System.out.println("nowMember.get(1) = " + nowMember.get(1L));
+        // 비밀번호 확인
+        if (!memberRegisterForm.getPassword().equals(memberRegisterForm.getPassword2())) {
+                bindingResult.rejectValue("password2", "differentPassword", "패스워드가 일치하지 않습니다.");
+            return "memberRegisterForm";
+        }
+
+        Member newMember = new Member(1L, memberRegisterForm.getUsername(), memberRegisterForm.getEmail(), memberRegisterForm.getPassword());
+        memberService.memberRegister(newMember);
 
         return "redirect:/";
     }
