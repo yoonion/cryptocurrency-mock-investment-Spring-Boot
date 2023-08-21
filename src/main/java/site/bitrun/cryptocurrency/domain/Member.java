@@ -1,14 +1,25 @@
 package site.bitrun.cryptocurrency.domain;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
+@Entity
 public class Member {
 
+    @Id @GeneratedValue
+    @Column(name = "member_id")
     private Long id;
+
     private String username;
     private String email;
     private String password;
 
-    public Member(Long id, String username, String email, String password) {
-        this.id = id;
+    public Member() {
+    }
+
+    public Member(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
@@ -46,13 +57,4 @@ public class Member {
         this.password = password;
     }
 
-    @Override
-    public String toString() {
-        return "Member{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                '}';
-    }
 }
