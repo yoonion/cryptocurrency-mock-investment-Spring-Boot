@@ -15,12 +15,10 @@ import site.bitrun.cryptocurrency.service.MemberService;
 @Controller
 public class BasicController {
 
-    private final MemberRepository memberRepository;
     private final MemberService memberService;
 
     @Autowired
-    public BasicController(MemberRepository memberRepository, MemberService memberService) {
-        this.memberRepository = memberRepository;
+    public BasicController(MemberService memberService) {
         this.memberService = memberService;
     }
 
@@ -50,7 +48,7 @@ public class BasicController {
             return "memberRegisterForm";
         }
 
-        Member newMember = new Member(1L, memberRegisterForm.getUsername(), memberRegisterForm.getEmail(), memberRegisterForm.getPassword());
+        Member newMember = new Member(memberRegisterForm.getUsername(), memberRegisterForm.getEmail(), memberRegisterForm.getPassword());
         memberService.memberRegister(newMember);
 
         return "redirect:/";
