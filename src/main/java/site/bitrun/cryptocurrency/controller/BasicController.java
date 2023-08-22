@@ -53,4 +53,10 @@ public class BasicController {
 
         return "redirect:/";
     }
+
+    // Chart TEST
+    @GetMapping("/chart")
+    public String viewChart() {
+        return "chart";
+    }
 }
