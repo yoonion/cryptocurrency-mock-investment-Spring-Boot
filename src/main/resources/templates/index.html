@@ -12,5 +12,33 @@
 <body layout:fragment="content">
     <h1>Main Page</h1>
     <a th:href="@{/member/register}">회원가입</a>
+    <div class="container">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">이름</th>
+                    <th scope="col">기호</th>
+                    <th scope="col" class="text-align-table-right">가격 (USD)</th>
+                    <th scope="col" class="text-align-table-right">시가총액 (USD)</th>
+                    <th scope="col" class="text-align-table-right">변동률 (24H)</th>
+                    <th scope="col" class="text-align-table-right">변동률 (7D)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="crypto : ${cryptoRankList}">
+                    <th th:text="${crypto.id}" scope="row">id</th>
+                    <td th:text="${crypto.name}">name</td>
+                    <td th:text="${crypto.symbol}">symbol</td>
+                    <td class="text-align-table-right" th:text="${crypto.quote.usd.price}">price</td>
+                    <td class="text-align-table-right" th:text="'$' + ${#numbers.formatInteger(crypto.quote.usd.marketCap, 3, 'COMMA')}">marketCap</td>
+                    <td class="text-align-table-right" th:style="${crypto.quote.usd.percentChange24h} > 0 ? 'color: #0ea600' : 'color: red'"
+                        th:text="${crypto.quote.usd.percentChange24h} > 0 ? '+' + ${#numbers.formatDecimal(crypto.quote.usd.percentChange24h, 1, 2)} + '%' : ${#numbers.formatDecimal(crypto.quote.usd.percentChange24h, 1, 2)} + '%'">percentChange24h</td>
+                    <td class="text-align-table-right" th:style="${crypto.quote.usd.percentChange7d} > 0 ? 'color: #0ea600' : 'color: red'"
+                        th:text="${crypto.quote.usd.percentChange7d} > 0 ? '+' + ${#numbers.formatDecimal(crypto.quote.usd.percentChange7d, 1, 2)} + '%' : ${#numbers.formatDecimal(crypto.quote.usd.percentChange7d, 1, 2)} + '%'">percentChange7d</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>

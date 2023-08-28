@@ -2,30 +2,49 @@ package site.bitrun.cryptocurrency.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import site.bitrun.cryptocurrency.domain.CryptoRank;
 import site.bitrun.cryptocurrency.domain.Member;
+import site.bitrun.cryptocurrency.dto.CryptoRankDto;
 import site.bitrun.cryptocurrency.dto.MemberRegisterForm;
-import site.bitrun.cryptocurrency.repository.MemberRepository;
+import site.bitrun.cryptocurrency.service.CryptoService;
 import site.bitrun.cryptocurrency.service.MemberService;
+
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class BasicController {
 
     private final MemberService memberService;
+    private final CryptoService cryptoService;
 
     @Autowired
-    public BasicController(MemberService memberService) {
+    public BasicController(MemberService memberService, CryptoService cryptoService) {
         this.memberService = memberService;
+        this.cryptoService = cryptoService;
     }
 
     // 메인 페이지
     @GetMapping("/")
-    public String main() {
+    public String main(Model model) {
+        List<CryptoRank> cryptoRankList = cryptoService.getCryptoRankList();
+        model.addAttribute("cryptoRankList", cryptoRankList);
+
         return "index";
+    }
+
+    // 코인마켓캡 api 호출해 DB 갱신 - 임시
+    @GetMapping("/crypto/rank/api/save")
+    public String cryptoRankApi() {
+        cryptoService.saveCryptoRankList();
+        return "redirect:/";
     }
 
     // 회원가입 view
