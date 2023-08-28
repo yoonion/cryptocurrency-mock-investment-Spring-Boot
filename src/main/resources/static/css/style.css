@@ -1,1 +1,4 @@
 * { font-family: 'Noto Sans KR', sans-serif; }
+.text-align-table-right {
+    text-align: right;
+}
