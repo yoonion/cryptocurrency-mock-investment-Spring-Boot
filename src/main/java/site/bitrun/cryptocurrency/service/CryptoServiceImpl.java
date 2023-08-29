@@ -67,18 +67,23 @@ public class CryptoServiceImpl implements CryptoService {
          * 가공한 데이터 LIST DB INSERT
          */
         List<CryptoRank> cryptoRanks = new ArrayList<>(); // rank data 담을 LIST
+//        List<String> symbolList = new ArrayList<String>(); // logo 이미지 정보는 api 주소가 달라서, api를 한번 더 요청해야한다.
 
         for (CryptoRankDto cryptoRankDto : cryptoRankDtos) {
+//            symbolList.add(cryptoRankDto.getSymbol()); // logo 정보를 가져오기 위한 list. 이 정보로 api 요청을 따로 한 번 더 해줘야함.
+
             CryptoRank cryptoRank = new CryptoRank();
             cryptoRank.setName(cryptoRankDto.getName());
             cryptoRank.setSymbol(cryptoRankDto.getSymbol());
+            cryptoRank.setApiCryptoId(cryptoRankDto.getApiCryptoId());
 
-            InnerQuote innerQuote = new InnerQuote();
             InnerUsd innerUsd = new InnerUsd();
             innerUsd.setPrice(cryptoRankDto.getQuote().getUsd().getPrice());
             innerUsd.setMarketCap(cryptoRankDto.getQuote().getUsd().getMarketCap());
             innerUsd.setPercentChange24h(cryptoRankDto.getQuote().getUsd().getPercentChange24h());
             innerUsd.setPercentChange7d(cryptoRankDto.getQuote().getUsd().getPercentChange7d());
+
+            InnerQuote innerQuote = new InnerQuote();
             innerQuote.setUsd(innerUsd);
             cryptoRank.setQuote(innerQuote);
 

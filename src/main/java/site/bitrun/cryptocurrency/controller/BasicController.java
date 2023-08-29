@@ -11,13 +11,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import site.bitrun.cryptocurrency.domain.CryptoRank;
 import site.bitrun.cryptocurrency.domain.Member;
-import site.bitrun.cryptocurrency.dto.CryptoRankDto;
 import site.bitrun.cryptocurrency.dto.MemberRegisterForm;
 import site.bitrun.cryptocurrency.service.CryptoService;
 import site.bitrun.cryptocurrency.service.MemberService;
 
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class BasicController {

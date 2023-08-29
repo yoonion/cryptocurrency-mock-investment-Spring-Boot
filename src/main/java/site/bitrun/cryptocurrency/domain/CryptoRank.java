@@ -11,6 +11,8 @@ public class CryptoRank {
 
     private String name;
     private String symbol;
+    @Column(name = "api_crypto_id")
+    private int apiCryptoId;
 
     @Embedded
     private InnerQuote quote;
@@ -48,6 +50,14 @@ public class CryptoRank {
 
     public void setQuote(InnerQuote quote) {
         this.quote = quote;
+    }
+
+    public int getApiCryptoId() {
+        return apiCryptoId;
+    }
+
+    public void setApiCryptoId(int apiCryptoId) {
+        this.apiCryptoId = apiCryptoId;
     }
 }
 
