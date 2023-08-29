@@ -10,6 +10,8 @@ public class CryptoRankDto {
 
     private String name;
     private String symbol;
+    @JsonProperty("id")
+    private int apiCryptoId;
     private InnerQuote quote;
 
     public CryptoRankDto() {
@@ -21,6 +23,10 @@ public class CryptoRankDto {
 
     public String getSymbol() {
         return symbol;
+    }
+
+    public int getApiCryptoId() {
+        return apiCryptoId;
     }
 
     public InnerQuote getQuote() {
@@ -36,7 +42,6 @@ public class CryptoRankDto {
         public InnerUsd getUsd() {
             return usd;
         }
-
         @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         public class InnerUsd {
             private float price; // 코인 1개당 가격 - USD

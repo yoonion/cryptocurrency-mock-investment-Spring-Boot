@@ -10,15 +10,13 @@
     <title>Main Page</title>
 </head>
 <body layout:fragment="content">
-    <h1>Main Page</h1>
-    <a th:href="@{/member/register}">회원가입</a>
     <div class="container">
         <table class="table table-hover">
             <thead>
                 <tr>
                     <th scope="col">#</th>
+                    <th scope="col"></th><!-- logo -->
                     <th scope="col">이름</th>
-                    <th scope="col">기호</th>
                     <th scope="col" class="text-align-table-right">가격 (USD)</th>
                     <th scope="col" class="text-align-table-right">시가총액 (USD)</th>
                     <th scope="col" class="text-align-table-right">변동률 (24H)</th>
@@ -28,8 +26,8 @@
             <tbody>
                 <tr th:each="crypto : ${cryptoRankList}">
                     <th th:text="${crypto.id}" scope="row">id</th>
-                    <td th:text="${crypto.name}">name</td>
-                    <td th:text="${crypto.symbol}">symbol</td>
+                    <td style="text-align: right;"><img style="max-width: 32px" th:src="|https://s2.coinmarketcap.com/static/img/coins/32x32/${crypto.apiCryptoId}.png|"></td>
+                    <td th:text="|${crypto.name} (${crypto.symbol})|">name</td>
                     <td class="text-align-table-right" th:text="${crypto.quote.usd.price}">price</td>
                     <td class="text-align-table-right" th:text="'$' + ${#numbers.formatInteger(crypto.quote.usd.marketCap, 3, 'COMMA')}">marketCap</td>
                     <td class="text-align-table-right" th:style="${crypto.quote.usd.percentChange24h} > 0 ? 'color: #0ea600' : 'color: red'"

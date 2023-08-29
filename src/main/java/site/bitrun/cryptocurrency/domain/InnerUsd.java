@@ -43,6 +43,4 @@ public class InnerUsd {
     public void setPercentChange7d(float percentChange7d) {
         this.percentChange7d = percentChange7d;
     }
-
-
 }
