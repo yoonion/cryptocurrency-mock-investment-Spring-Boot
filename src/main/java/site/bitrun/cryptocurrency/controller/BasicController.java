@@ -8,7 +8,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import site.bitrun.cryptocurrency.domain.CryptoRank;
 import site.bitrun.cryptocurrency.domain.Member;
 import site.bitrun.cryptocurrency.dto.MemberRegisterForm;
@@ -27,6 +26,12 @@ public class BasicController {
     public BasicController(MemberService memberService, CryptoService cryptoService) {
         this.memberService = memberService;
         this.cryptoService = cryptoService;
+    }
+
+    // Chart TEST
+    @GetMapping("/chart")
+    public String viewChart() {
+        return "chart";
     }
 
     // 메인 페이지
@@ -61,7 +66,7 @@ public class BasicController {
 
         // 비밀번호 확인
         if (!memberRegisterForm.getPassword().equals(memberRegisterForm.getPassword2())) {
-                bindingResult.rejectValue("password2", "differentPassword", "패스워드가 일치하지 않습니다.");
+            bindingResult.rejectValue("password2", "differentPassword", "패스워드가 일치하지 않습니다.");
             return "memberRegisterForm";
         }
 
@@ -71,9 +76,10 @@ public class BasicController {
         return "redirect:/";
     }
 
-    // Chart TEST
-    @GetMapping("/chart")
-    public String viewChart() {
-        return "chart";
+    // 로그인 view
+    @GetMapping("/member/login")
+    public String memberLoginForm() {
+        return "memberLoginForm";
     }
+
 }
