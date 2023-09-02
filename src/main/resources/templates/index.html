@@ -10,33 +10,47 @@
     <title>Main Page</title>
 </head>
 <body layout:fragment="content">
+
+    <div class="main-banner">
+        <div>
+            <div class="mb-5"><h1>암호화폐 모의투자, 무료로 시작하세요.</h1></div>
+            <button class="btn btn-primary btn-lg" type="button">거래소 둘러보기</button>
+            <button class="btn btn-primary btn-lg" type="button">로그인</button>
+        </div>
+    </div>
+
     <div class="container">
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col"></th><!-- logo -->
-                    <th scope="col">이름</th>
-                    <th scope="col" class="text-align-table-right">가격 (USD)</th>
-                    <th scope="col" class="text-align-table-right">시가총액 (USD)</th>
-                    <th scope="col" class="text-align-table-right">변동률 (24H)</th>
-                    <th scope="col" class="text-align-table-right">변동률 (7D)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="crypto : ${cryptoRankList}">
-                    <th th:text="${crypto.id}" scope="row">id</th>
-                    <td style="text-align: right;"><img style="max-width: 32px" th:src="|https://s2.coinmarketcap.com/static/img/coins/32x32/${crypto.apiCryptoId}.png|"></td>
-                    <td th:text="|${crypto.name} (${crypto.symbol})|">name</td>
-                    <td class="text-align-table-right" th:text="${crypto.quote.usd.price}">price</td>
-                    <td class="text-align-table-right" th:text="'$' + ${#numbers.formatInteger(crypto.quote.usd.marketCap, 3, 'COMMA')}">marketCap</td>
-                    <td class="text-align-table-right" th:style="${crypto.quote.usd.percentChange24h} > 0 ? 'color: #0ea600' : 'color: red'"
-                        th:text="${crypto.quote.usd.percentChange24h} > 0 ? '+' + ${#numbers.formatDecimal(crypto.quote.usd.percentChange24h, 1, 2)} + '%' : ${#numbers.formatDecimal(crypto.quote.usd.percentChange24h, 1, 2)} + '%'">percentChange24h</td>
-                    <td class="text-align-table-right" th:style="${crypto.quote.usd.percentChange7d} > 0 ? 'color: #0ea600' : 'color: red'"
-                        th:text="${crypto.quote.usd.percentChange7d} > 0 ? '+' + ${#numbers.formatDecimal(crypto.quote.usd.percentChange7d, 1, 2)} + '%' : ${#numbers.formatDecimal(crypto.quote.usd.percentChange7d, 1, 2)} + '%'">percentChange7d</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="w-75" style="margin-left: auto; margin-right: auto;">
+            <div class="mb-3 d-flex">
+                <h2>시가총액 Top 100</h2>
+            </div>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col"></th><!-- logo -->
+                        <th scope="col">이름</th>
+                        <th scope="col" class="text-align-table-right">가격 (USD)</th>
+                        <th scope="col" class="text-align-table-right">시가총액 (USD)</th>
+                        <th scope="col" class="text-align-table-right">변동률 (24H)</th>
+                        <th scope="col" class="text-align-table-right">변동률 (7D)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="crypto : ${cryptoRankList}">
+                        <th th:text="${crypto.id}" scope="row">id</th>
+                        <td style="text-align: right;"><img style="max-width: 32px" th:src="|https://s2.coinmarketcap.com/static/img/coins/32x32/${crypto.apiCryptoId}.png|"></td>
+                        <td th:text="|${crypto.name} (${crypto.symbol})|">name</td>
+                        <td class="text-align-table-right" th:text="${crypto.quote.usd.price}">price</td>
+                        <td class="text-align-table-right" th:text="'$' + ${#numbers.formatInteger(crypto.quote.usd.marketCap, 3, 'COMMA')}">marketCap</td>
+                        <td class="text-align-table-right" th:style="${crypto.quote.usd.percentChange24h} > 0 ? 'color: #0ea600' : 'color: red'"
+                            th:text="${crypto.quote.usd.percentChange24h} > 0 ? '+' + ${#numbers.formatDecimal(crypto.quote.usd.percentChange24h, 1, 2)} + '%' : ${#numbers.formatDecimal(crypto.quote.usd.percentChange24h, 1, 2)} + '%'">percentChange24h</td>
+                        <td class="text-align-table-right" th:style="${crypto.quote.usd.percentChange7d} > 0 ? 'color: #0ea600' : 'color: red'"
+                            th:text="${crypto.quote.usd.percentChange7d} > 0 ? '+' + ${#numbers.formatDecimal(crypto.quote.usd.percentChange7d, 1, 2)} + '%' : ${#numbers.formatDecimal(crypto.quote.usd.percentChange7d, 1, 2)} + '%'">percentChange7d</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </body>
 </html>

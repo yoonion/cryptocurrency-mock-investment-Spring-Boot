@@ -2,12 +2,23 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
     <!-- configFragment -->
     <th:block th:fragment="configFragment">
-        <!-- Style -->
+        <!--  favicon  -->
+        <link rel="icon" th:href="@{/img/favicon.png}">
+
+        <!-- Nato Sans KR Font -->
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+
+        <!-- Common Style -->
         <link th:href="@{/css/style.css}" rel="stylesheet">
 
-        <!-- Bootstrap CSS(webjars) -->
-        <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.1/css/bootstrap.min.css}">
+        <!-- Bootstrap CSS CDN -->
+        <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">-->
+
+        <!-- MDB CDN -->
+        <!-- Font Awesome (icon) -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.css" rel="stylesheet" />
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.js" defer></script>
 
         <!-- Javascript file -->
         <!--    <script th:src="@{/js/file.js}"></script>-->

@@ -1,4 +1,23 @@
 * { font-family: 'Noto Sans KR', sans-serif; }
 .text-align-table-right { text-align: right; }
 
-td { vertical-align: middle; }
+td, th { vertical-align: middle; }
+
+.main-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 450px;
+    text-align: center;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+
+    background-image: linear-gradient(
+            rgba(255, 255, 255, 0.7),
+            rgba(255, 255, 255, 0.7)
+    ), url("../img/main_1920.jpg");
+
+    margin-bottom: 50px;
+}
