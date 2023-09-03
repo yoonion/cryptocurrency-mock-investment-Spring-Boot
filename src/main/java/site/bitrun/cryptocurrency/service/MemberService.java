@@ -7,7 +7,9 @@ public interface MemberService {
 
     void memberRegister(Member member);
 
-    Member memberLogin(String email, String password);
+    boolean memberCheckDuplicate(String email);
+
+    Member memberLogin(String email, String password, HttpServletRequest request);
 
     void memberLogout(HttpServletRequest request);
 }

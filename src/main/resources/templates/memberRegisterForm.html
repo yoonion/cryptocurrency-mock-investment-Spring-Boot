@@ -16,6 +16,10 @@
 
                                 <form action="/member/register" th:action method="post" th:object="${memberRegisterForm}" class="mx-1 mx-md-4">
 
+                                    <div th:if="${#fields.hasGlobalErrors()}" class="text-danger mb-3">
+                                        <p th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
+                                    </div>
+
                                     <div class="d-flex flex-row align-items-center mb-4">
                                         <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                                         <div class="form-outline flex-fill mb-0">

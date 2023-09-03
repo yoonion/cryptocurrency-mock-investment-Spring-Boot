@@ -63,7 +63,7 @@ public class BasicController {
 
     // 회원가입
     @PostMapping("/member/register")
-    public String memberRegister(@Validated @ModelAttribute MemberRegisterForm memberRegisterForm, BindingResult bindingResult) {
+    public String memberRegister(@Validated @ModelAttribute MemberRegisterForm memberRegisterForm, BindingResult bindingResult, HttpServletRequest request) {
 
         if (bindingResult.hasErrors()) {
             return "memberRegisterForm";
@@ -75,8 +75,18 @@ public class BasicController {
             return "memberRegisterForm";
         }
 
+        // 중복 체크
+        // true 일 경우 중복
+        if (memberService.memberCheckDuplicate(memberRegisterForm.getEmail())) {
+            bindingResult.reject("emailDuplicate", "이미 존재하는 회원입니다."); // global error
+            return "memberRegisterForm";
+        }
+
         Member newMember = new Member(memberRegisterForm.getUsername(), memberRegisterForm.getEmail(), memberRegisterForm.getPassword());
         memberService.memberRegister(newMember);
+
+        // 성공했다면 로그인까지 처리한다.
+         memberService.memberLogin(memberRegisterForm.getEmail(), memberRegisterForm.getPassword(), request);
 
         return "redirect:/";
     }
@@ -95,16 +105,13 @@ public class BasicController {
             return "memberLoginForm";
         }
 
-        Member loginMember = memberService.memberLogin(memberLoginForm.getEmail(), memberLoginForm.getPassword());
+        Member loginMember = memberService.memberLogin(memberLoginForm.getEmail(), memberLoginForm.getPassword(), request);
 
         // 로그인 실패시
         if (loginMember == null) {
             bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다."); // global error
             return "memberLoginForm";
         }
-
-        HttpSession session = request.getSession();
-        session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
 
         return "redirect:/";
     }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import site.bitrun.cryptocurrency.domain.Member;
 import site.bitrun.cryptocurrency.repository.MemberRepository;
+import site.bitrun.cryptocurrency.session.SessionConst;
 
 @Service
 public class MemberServiceImpl implements MemberService {
@@ -25,11 +26,14 @@ public class MemberServiceImpl implements MemberService {
 
     // 로그인
     @Override
-    public Member memberLogin(String email, String password) {
+    public Member memberLogin(String email, String password, HttpServletRequest request) {
         Member findMember = memberRepository.findByEmail(email);
 
         if (findMember.getPassword().equals(password)) {
-            return findMember; // 로그인 성공
+            HttpSession session = request.getSession();
+            session.setAttribute(SessionConst.LOGIN_MEMBER, findMember);
+
+            return findMember;
         } else {
             return null; // 로그인 실패
         }
@@ -44,6 +48,18 @@ public class MemberServiceImpl implements MemberService {
         if (session != null) {
             session.invalidate();
         }
+    }
+
+    // 회원 중복체크
+    @Override
+    public boolean memberCheckDuplicate(String email) {
+        Member checkMember = memberRepository.findByEmail(email);
+
+        if (checkMember == null) {
+            return false;
+        }
+
+        return true;
     }
 
 }
