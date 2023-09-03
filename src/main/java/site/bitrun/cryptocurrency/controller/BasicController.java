@@ -1,5 +1,7 @@
 package site.bitrun.cryptocurrency.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,11 +12,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import site.bitrun.cryptocurrency.domain.CryptoRank;
 import site.bitrun.cryptocurrency.domain.Member;
+import site.bitrun.cryptocurrency.dto.MemberLoginForm;
 import site.bitrun.cryptocurrency.dto.MemberRegisterForm;
 import site.bitrun.cryptocurrency.service.CryptoService;
 import site.bitrun.cryptocurrency.service.MemberService;
+import site.bitrun.cryptocurrency.session.SessionConst;
 
 import java.util.List;
+
 
 @Controller
 public class BasicController {
@@ -78,8 +83,38 @@ public class BasicController {
 
     // 로그인 view
     @GetMapping("/member/login")
-    public String memberLoginForm() {
+    public String memberLoginForm(@ModelAttribute MemberLoginForm memberLoginForm) {
         return "memberLoginForm";
+    }
+
+    // 로그인 처리
+    @PostMapping("/member/login")
+    public String memberLogin(@Validated @ModelAttribute MemberLoginForm memberLoginForm, BindingResult bindingResult, HttpServletRequest request) {
+
+        if (bindingResult.hasErrors()) {
+            return "memberLoginForm";
+        }
+
+        Member loginMember = memberService.memberLogin(memberLoginForm.getEmail(), memberLoginForm.getPassword());
+
+        // 로그인 실패시
+        if (loginMember == null) {
+            bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다."); // global error
+            return "memberLoginForm";
+        }
+
+        HttpSession session = request.getSession();
+        session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
+
+        return "redirect:/";
+    }
+
+    // 로그아웃
+    @GetMapping("/member/logout")
+    public String memberLogout(HttpServletRequest request) {
+        memberService.memberLogout(request);
+
+        return "redirect:/";
     }
 
 }

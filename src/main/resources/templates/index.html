@@ -4,9 +4,6 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{fragments/layout}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Main Page</title>
 </head>
 <body layout:fragment="content">
@@ -15,7 +12,7 @@
         <div>
             <div class="mb-5"><h1>암호화폐 모의투자, 무료로 시작하세요.</h1></div>
             <button class="btn btn-primary btn-lg" type="button">거래소 둘러보기</button>
-            <button class="btn btn-primary btn-lg" type="button">로그인</button>
+            <button th:if="${session.loginMember == null}" th:onclick="|location.href='@{/member/login}'|" class="btn btn-info btn-lg" type="button">로그인</button>
         </div>
     </div>
 

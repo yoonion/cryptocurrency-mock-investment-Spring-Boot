@@ -13,8 +13,13 @@
             <li><a href="#" class="nav-link px-2 link-body-emphasis">Products</a></li>
         </ul>
 
-        <div>
-            <button type="button" th:onclick="|location.href='@{/member/login}'|" class="btn btn-outline-primary">로그인</button>
+        <div th:if="${session.loginMember != null}" class="d-flex justify-content-center">
+            <span th:text="|${session.loginMember.username}님, 안녕하세요!|" class="align-self-center mx-3">님, 안녕하세요!</span>
+            <button type="button" th:onclick="|location.href='@{/member/logout}'|" class="btn btn-danger">로그아웃</button>
+        </div>
+
+        <div th:if="${session.loginMember == null}">
+            <button type="button" th:onclick="|location.href='@{/member/login}'|" class="btn btn-info">로그인</button>
             <button type="button" th:onclick="|location.href='@{/member/register}'|" class="btn btn-primary">회원가입</button>
         </div>
 
