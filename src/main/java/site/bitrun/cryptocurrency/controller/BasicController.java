@@ -1,7 +1,6 @@
 package site.bitrun.cryptocurrency.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,14 +9,17 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import site.bitrun.cryptocurrency.domain.CryptoRank;
+import site.bitrun.cryptocurrency.global.api.coinmarketcap.domain.CryptoRank;
 import site.bitrun.cryptocurrency.domain.Member;
 import site.bitrun.cryptocurrency.dto.MemberLoginForm;
 import site.bitrun.cryptocurrency.dto.MemberRegisterForm;
-import site.bitrun.cryptocurrency.service.CryptoService;
+import site.bitrun.cryptocurrency.global.api.coinmarketcap.service.CryptoService;
+import site.bitrun.cryptocurrency.global.api.upbit.domain.UpbitMarket;
+import site.bitrun.cryptocurrency.global.api.upbit.dto.UpbitMarketDto;
+import site.bitrun.cryptocurrency.global.api.upbit.service.UpbitService;
 import site.bitrun.cryptocurrency.service.MemberService;
-import site.bitrun.cryptocurrency.session.SessionConst;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -26,18 +28,32 @@ public class BasicController {
 
     private final MemberService memberService;
     private final CryptoService cryptoService;
+    private final UpbitService upbitService;
 
     @Autowired
-    public BasicController(MemberService memberService, CryptoService cryptoService) {
+    public BasicController(MemberService memberService, CryptoService cryptoService, UpbitService upbitService) {
         this.memberService = memberService;
         this.cryptoService = cryptoService;
+        this.upbitService = upbitService;
     }
 
-    // Chart TEST
-    @GetMapping("/chart")
-    public String viewChart() {
-        return "chart";
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////// API DB SAVE /////////////////////////////////
+    /////////////// 코인마켓캡 api 호출해 DB 저장 - 임시 .. //////////////////
+    @GetMapping("/crypto/rank/api/save")
+    public String cryptoRankApi() {
+        cryptoService.saveCryptoRankList();
+        return "redirect:/";
     }
+
+    ///////////////// 업비트 api 호출 - 거래가능 마켓 목록 DB 저장 - 임시 .. ///////////////
+    @GetMapping("/upbit/api/save")
+    public String upbitMarketApi() {
+        upbitService.saveUpbitMarket();
+        return "redirect:/";
+    }
+    ////////////////////////// API DB SAVE //////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////
 
     // 메인 페이지
     @GetMapping("/")
@@ -48,11 +64,13 @@ public class BasicController {
         return "index";
     }
 
-    // 코인마켓캡 api 호출해 DB 갱신 - 임시
-    @GetMapping("/crypto/rank/api/save")
-    public String cryptoRankApi() {
-        cryptoService.saveCryptoRankList();
-        return "redirect:/";
+    // 거래소
+    @GetMapping("/trade/order")
+    public String viewChart(Model model) {
+        List<UpbitMarket> upbitMarketList = upbitService.getUpbitMarketList();
+        model.addAttribute(upbitMarketList);
+
+        return "trade/order";
     }
 
     // 회원가입 view

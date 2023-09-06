@@ -1,4 +1,4 @@
-package site.bitrun.cryptocurrency.dto;
+package site.bitrun.cryptocurrency.global.api.coinmarketcap.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;

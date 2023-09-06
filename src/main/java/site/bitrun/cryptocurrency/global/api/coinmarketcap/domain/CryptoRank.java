@@ -1,4 +1,4 @@
-package site.bitrun.cryptocurrency.domain;
+package site.bitrun.cryptocurrency.global.api.coinmarketcap.domain;
 
 import jakarta.persistence.*;
 

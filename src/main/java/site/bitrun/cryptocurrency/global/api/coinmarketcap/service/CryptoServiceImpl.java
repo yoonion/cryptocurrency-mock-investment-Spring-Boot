@@ -1,4 +1,4 @@
-package site.bitrun.cryptocurrency.service;
+package site.bitrun.cryptocurrency.global.api.coinmarketcap.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -8,11 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import site.bitrun.cryptocurrency.domain.CryptoRank;
-import site.bitrun.cryptocurrency.domain.InnerQuote;
-import site.bitrun.cryptocurrency.domain.InnerUsd;
-import site.bitrun.cryptocurrency.dto.CryptoRankDto;
-import site.bitrun.cryptocurrency.repository.CryptoRepository;
+import site.bitrun.cryptocurrency.global.api.coinmarketcap.domain.CryptoRank;
+import site.bitrun.cryptocurrency.global.api.coinmarketcap.domain.InnerQuote;
+import site.bitrun.cryptocurrency.global.api.coinmarketcap.domain.InnerUsd;
+import site.bitrun.cryptocurrency.global.api.coinmarketcap.dto.CryptoRankDto;
+import site.bitrun.cryptocurrency.global.api.coinmarketcap.repository.CryptoRepository;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,10 +67,8 @@ public class CryptoServiceImpl implements CryptoService {
          * 가공한 데이터 LIST DB INSERT
          */
         List<CryptoRank> cryptoRanks = new ArrayList<>(); // rank data 담을 LIST
-//        List<String> symbolList = new ArrayList<String>(); // logo 이미지 정보는 api 주소가 달라서, api를 한번 더 요청해야한다.
 
         for (CryptoRankDto cryptoRankDto : cryptoRankDtos) {
-//            symbolList.add(cryptoRankDto.getSymbol()); // logo 정보를 가져오기 위한 list. 이 정보로 api 요청을 따로 한 번 더 해줘야함.
 
             CryptoRank cryptoRank = new CryptoRank();
             cryptoRank.setName(cryptoRankDto.getName());

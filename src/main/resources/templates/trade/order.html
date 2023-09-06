@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+    <head>
+        <title>거래소</title>
+    </head>
+    <body layout:fragment="content">
+        <style>
+
+        </style>
+
+        <div class="d-flex">
+            <section>
+                <div>
+                    <!-- chart widget -->
+                    <div id="trading_chart_view"></div>
+                </div>
+            </section>
+
+            <section>
+                <!-- Tabs navs -->
+                <ul class="nav nav-tabs nav-justified" id="ex1" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a
+                                class="nav-link active"
+                                id="ex3-tab-1"
+                                data-mdb-toggle="tab"
+                                href="#ex3-tabs-1"
+                                role="tab"
+                                aria-controls="ex3-tabs-1"
+                                aria-selected="true"
+                        >원화</a
+                        >
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a
+                                class="nav-link"
+                                id="ex3-tab-2"
+                                data-mdb-toggle="tab"
+                                href="#ex3-tabs-2"
+                                role="tab"
+                                aria-controls="ex3-tabs-2"
+                                aria-selected="false"
+                        >보유</a
+                        >
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a
+                                class="nav-link"
+                                id="ex3-tab-3"
+                                data-mdb-toggle="tab"
+                                href="#ex3-tabs-3"
+                                role="tab"
+                                aria-controls="ex3-tabs-3"
+                                aria-selected="false"
+                        >관심</a
+                        >
+                    </li>
+                </ul>
+                <!-- Tabs navs -->
+
+                <!-- Tabs content -->
+                <div class="tab-content" id="ex2-content">
+                    <div class="tab-pane fade show active" id="ex3-tabs-1" role="tabpanel" aria-labelledby="ex3-tab-1">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">한글명</th>
+                                    <th scope="col">현재가</th>
+                                    <th scope="col">전일대비</th>
+                                    <th scope="col">거래량</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="item :${upbitMarketList}">
+                                    <td th:text="${item.koreanName}">Mark</td>
+                                    <td>100,000</td>
+                                    <td>-10%</td>
+                                    <td>51,983만</td>
+                                </tr>
+                                <tr>
+                                    <td>Jacob</td>
+                                    <td>Thornton</td>
+                                    <td>@fat</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">Larry the Bird</td>
+                                    <td>@twitter</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="tab-pane fade" id="ex3-tabs-2" role="tabpanel" aria-labelledby="ex3-tab-2">
+                        Tab 2 content
+                    </div>
+
+                    <div class="tab-pane fade" id="ex3-tabs-3" role="tabpanel" aria-labelledby="ex3-tab-3">
+                        Tab 3 content
+                    </div>
+                </div>
+                <!-- Tabs content -->
+            </section>
+        </div>
+
+        <!-- TradingView Widget BEGIN -->
+        <div class="tradingview-widget-container">
+            <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+            <script type="text/javascript">
+                new TradingView.widget(
+                    {
+                        custom_font_family: "'Noto Sans KR', sans-serif",
+                        autosize: false,
+                        symbol: "UPBIT:XLMKRW",
+                        interval: "D",
+                        timezone: "Asia/Seoul",
+                        theme: "light",
+                        style: "1",
+                        locale: "kr",
+                        enable_publishing: true,
+                        allow_symbol_change: false,
+                        container_id: "trading_chart_view",
+                    }
+                );
+            </script>
+        </div>
+        <!-- TradingView Widget END -->
+
+        <!-- Upbit Websocket -->
+        <script type="text/javascript">
+            // 웹소켓 생성
+            // const upbitWebsocketUrl = "wss://api.upbit.com/websocket/v1";
+            // const socket = new WebSocket(upbitWebsocketUrl);
+
+            // 커넥션이 제대로 생성되었을 때
+            socket.onopen = function (e) {
+                console.log("웹 소켓 연결 성공")
+                let jsonData = [
+                    {
+                        "ticket": "test example"
+                    },
+                    {
+                        "type": "ticker",
+                        "codes": [
+                            "KRW-BTC"
+                        ]
+                    }
+                ];
+
+                socket.send(JSON.stringify(jsonData))
+            };
+
+            // 데이터를 수신 받았을 때
+            let result;
+            socket.onmessage = async function (e) {
+                try {
+                    if (e !== null && e !== undefined) {
+                        result = JSON.parse(await e.data.text()); // blob to json
+                        console.log(result);
+                    }
+                } catch (err) {
+                    console.log("ERROR !!" + err);
+                }
+            };
+
+            // 에러가 발생했을 때
+            socket.onerror = function (e) {
+                console.log(e);
+            };
+        </script>
+
+    </body>
+
+</html>

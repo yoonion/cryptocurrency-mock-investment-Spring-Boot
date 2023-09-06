@@ -29,13 +29,17 @@ public class MemberServiceImpl implements MemberService {
     public Member memberLogin(String email, String password, HttpServletRequest request) {
         Member findMember = memberRepository.findByEmail(email);
 
+        if (findMember == null) {
+            return null;
+        }
+
         if (findMember.getPassword().equals(password)) {
             HttpSession session = request.getSession();
             session.setAttribute(SessionConst.LOGIN_MEMBER, findMember);
 
             return findMember;
         } else {
-            return null; // 로그인 실패
+            return null;
         }
 
     }
