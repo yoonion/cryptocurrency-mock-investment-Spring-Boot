@@ -10,4 +10,6 @@ public interface UpbitService {
     void saveUpbitMarket();
 
     List<UpbitMarket> getUpbitMarketList();
+
+    UpbitMarket getUpbitMarketOne(String code);
 }

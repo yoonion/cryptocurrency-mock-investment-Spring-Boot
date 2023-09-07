@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface UpbitRepository extends JpaRepository<UpbitMarket, Long> {
     List<UpbitMarket> findByMarketLike(String market);
+
+    UpbitMarket findByMarket(String code);
 }

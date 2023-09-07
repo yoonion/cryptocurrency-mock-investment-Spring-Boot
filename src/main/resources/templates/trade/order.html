@@ -15,8 +15,14 @@
             <section>
                 <div>
                     <!-- chart widget -->
+                    <div class="d-flex">
+                        <span class="me-2"><h2 th:text="${upbitCryptoInfo.koreanName}">암호화폐 이름</h2></span>
+                        <span th:text="${upbitCryptoInfo.market}" class="align-self-center"></span>
+                    </div>
+
                     <div id="trading_chart_view"></div>
                 </div>
+
             </section>
 
             <section>
@@ -74,21 +80,15 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="item :${upbitMarketList}">
-                                    <td th:text="${item.koreanName}">Mark</td>
-                                    <td>100,000</td>
-                                    <td>-10%</td>
-                                    <td>51,983만</td>
+                            <th:block th:each="item : ${upbitMarketList}">
+                                <tr th:onclick="|location.href='@{/trade/order(code=${item.market})}'|">
+                                    <td th:text="${item.koreanName}">-</td>
+                                    <td th:id="${item.market} + '-trade_price'" class="text-align-table-right">-</td>
+                                    <td th:id="${item.market} + '-signed_change_rate'" class="text-align-table-right">-</td>
+                                    <td th:id="${item.market} + '-acc_trade_price_24h'" class="text-align-table-right">-</td>
                                 </tr>
-                                <tr>
-                                    <td>Jacob</td>
-                                    <td>Thornton</td>
-                                    <td>@fat</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">Larry the Bird</td>
-                                    <td>@twitter</td>
-                                </tr>
+                            </th:block>
+
                             </tbody>
                         </table>
                     </div>
@@ -109,11 +109,22 @@
         <div class="tradingview-widget-container">
             <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
             <script type="text/javascript">
+                // 암호화폐 symbol 위젯 불러오기
+                const urlParams = new URL(location.href).searchParams;
+                let pure_market_code = "";
+
+                if (urlParams.size < 1) { // 쿼리 스트링 없을 때 기본 비트코인으로 보여준다
+                    pure_market_code = "BTC";
+                } else {
+                    const market_code = urlParams.get('code');
+                    pure_market_code = market_code.split('-')[1];
+                }
+
                 new TradingView.widget(
                     {
                         custom_font_family: "'Noto Sans KR', sans-serif",
                         autosize: false,
-                        symbol: "UPBIT:XLMKRW",
+                        symbol: "UPBIT:" + pure_market_code + "KRW",
                         interval: "D",
                         timezone: "Asia/Seoul",
                         theme: "light",
@@ -129,10 +140,11 @@
         <!-- TradingView Widget END -->
 
         <!-- Upbit Websocket -->
-        <script type="text/javascript">
+        <script type="text/javascript" th:inline="javascript">
+
             // 웹소켓 생성
-            // const upbitWebsocketUrl = "wss://api.upbit.com/websocket/v1";
-            // const socket = new WebSocket(upbitWebsocketUrl);
+            const upbitWebsocketUrl = "wss://api.upbit.com/websocket/v1";
+            const socket = new WebSocket(upbitWebsocketUrl);
 
             // 커넥션이 제대로 생성되었을 때
             socket.onopen = function (e) {
@@ -143,9 +155,7 @@
                     },
                     {
                         "type": "ticker",
-                        "codes": [
-                            "KRW-BTC"
-                        ]
+                        "codes": [[${marketListString}]] // ["KRW-BTC", "KRW-NEO" ... ]
                     }
                 ];
 
@@ -153,12 +163,46 @@
             };
 
             // 데이터를 수신 받았을 때
-            let result;
             socket.onmessage = async function (e) {
                 try {
                     if (e !== null && e !== undefined) {
-                        result = JSON.parse(await e.data.text()); // blob to json
-                        console.log(result);
+                        let result = JSON.parse(await e.data.text()); // blob to json
+                        // console.log(result);
+
+                        // 암호화폐 마켓 코드
+                        let crypto_code = result.code; // ex) KRW-BTC, KRW-NEO ...
+
+                        // 현재가
+                        let trade_price = result.trade_price;
+                        trade_price = new Intl.NumberFormat('ko-kr').format(trade_price);
+
+                        // 전일 대비 등락율(%)
+                        let signed_change_rate = (result.signed_change_rate * 100 ).toFixed(2);
+
+                        if (signed_change_rate > 0) { // 전일 대비 상승일 경우 style
+                            signed_change_rate = "+" + signed_change_rate; // 부호 + 붙여주기
+                            document.getElementById(crypto_code + '-trade_price').style.color = '#0ea600';
+                            document.getElementById(crypto_code + '-signed_change_rate').style.color = '#0ea600';
+                        } else if (signed_change_rate == 0) { //  전일 대비 같을 경우
+                            document.getElementById(crypto_code + '-trade_price').style.color = 'gray';
+                            document.getElementById(crypto_code + '-signed_change_rate').style.color = 'gray';
+                        } else if (signed_change_rate < 0) { // 전일 대비 하락인 경우
+                            document.getElementById(crypto_code + '-trade_price').style.color = '#F6465D';
+                            document.getElementById(crypto_code + '-signed_change_rate').style.color = '#F6465D';
+                        }
+
+                        // 24시간 누적 거래대금
+                        let acc_trade_price_24h = Math.ceil(result.acc_trade_price_24h);
+                        acc_trade_price_24h = Math.round(acc_trade_price_24h / 1000000) * 1000000;
+                        acc_trade_price_24h = acc_trade_price_24h.toString();
+                        acc_trade_price_24h = acc_trade_price_24h.slice(0, acc_trade_price_24h.length-6) + "백만";
+
+                        // 해당하는 암호화폐 html text 변경해준다
+                        document.getElementById(crypto_code + '-trade_price').innerText = trade_price;
+                        document.getElementById(crypto_code + '-signed_change_rate').innerText = signed_change_rate;
+                        document.getElementById(crypto_code + '-acc_trade_price_24h').innerText = acc_trade_price_24h;
+
+                        // console.log(crypto_code + "현재가 : " + trade_price, "전일 대비 등락율" + signed_change_rate, "24시간 누적 거래대금 : " + acc_trade_price_24h);
                     }
                 } catch (err) {
                     console.log("ERROR !!" + err);

@@ -67,4 +67,9 @@ public class UpbitServiceImpl implements UpbitService {
     public List<UpbitMarket> getUpbitMarketList() {
         return upbitRepository.findByMarketLike("KRW%");
     }
+
+    @Override
+    public UpbitMarket getUpbitMarketOne(String code) {
+        return upbitRepository.findByMarket(code);
+    }
 }

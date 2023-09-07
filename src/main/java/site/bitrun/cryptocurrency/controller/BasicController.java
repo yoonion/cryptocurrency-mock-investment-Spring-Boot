@@ -4,11 +4,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import site.bitrun.cryptocurrency.global.api.coinmarketcap.domain.CryptoRank;
 import site.bitrun.cryptocurrency.domain.Member;
 import site.bitrun.cryptocurrency.dto.MemberLoginForm;
@@ -66,9 +68,28 @@ public class BasicController {
 
     // 거래소
     @GetMapping("/trade/order")
-    public String viewChart(Model model) {
+    public String viewChart(@RequestParam(name="code", required = false) String code, Model model) {
+
+        // 파라미터 없으면 기본 비트코인으로 redirect 시킴
+        if (StringUtils.isEmpty(code)) {
+            return "redirect:/trade/order?code=KRW-BTC";
+        }
+
+        // 쿼리 파라미터로 해당하는 암호화폐의 정보를 1개 가져온다.
+        UpbitMarket findUpbitCryptoOne = upbitService.getUpbitMarketOne(code);
+        model.addAttribute("upbitCryptoInfo", findUpbitCryptoOne);
+
+        // 오른쪽 side nav 를 위한 전체 리스트
         List<UpbitMarket> upbitMarketList = upbitService.getUpbitMarketList();
         model.addAttribute(upbitMarketList);
+
+        // upbit websocket 요청 json 부분 - 암호화폐 list json 요청에 넣어줄 것임
+        List<String> marketListString = new ArrayList<>();
+        for (UpbitMarket upbitMarket : upbitMarketList) {
+            marketListString.add(upbitMarket.getMarket());
+        }
+        // System.out.println(marketListString);
+        model.addAttribute("marketListString", marketListString);
 
         return "trade/order";
     }
