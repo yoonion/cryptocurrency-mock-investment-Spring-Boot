@@ -5,108 +5,105 @@
       layout:decorate="~{fragments/layout}">
     <head>
         <title>거래소</title>
+        <style>
+            td {font-size: 11px;}
+            tr {font-size: 10px;}
+        </style>
     </head>
     <body layout:fragment="content">
-        <style>
-
-        </style>
-
-        <div class="d-flex">
-            <section>
-                <div>
-                    <!-- chart widget -->
-                    <div class="d-flex">
-                        <span class="me-2"><h2 th:text="${upbitCryptoInfo.koreanName}">암호화폐 이름</h2></span>
-                        <span th:text="${upbitCryptoInfo.market}" class="align-self-center"></span>
+        <div class="container mt-3">
+            <div class="d-flex">
+                <section>
+                    <div class="me-4">
+                        <div class="d-flex">
+                            <span class="me-2"><h2 th:text="${upbitCryptoInfo.koreanName}">암호화폐 이름</h2></span>
+                            <span th:text="${upbitCryptoInfo.market}" class="align-self-center"></span>
+                        </div>
+                        <!-- chart widget -->
+                        <div id="trading_chart_view"></div>
                     </div>
+                </section>
 
-                    <div id="trading_chart_view"></div>
-                </div>
+                <section style="height: 500px">
+                    <!-- Tabs navs -->
+                    <ul class="nav nav-tabs nav-justified" id="ex1" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a
+                                    class="nav-link active"
+                                    id="ex3-tab-1"
+                                    data-mdb-toggle="tab"
+                                    href="#ex3-tabs-1"
+                                    role="tab"
+                                    aria-controls="ex3-tabs-1"
+                                    aria-selected="true"
+                            >원화</a
+                            >
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a
+                                    class="nav-link"
+                                    id="ex3-tab-2"
+                                    data-mdb-toggle="tab"
+                                    href="#ex3-tabs-2"
+                                    role="tab"
+                                    aria-controls="ex3-tabs-2"
+                                    aria-selected="false"
+                            >보유</a
+                            >
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a
+                                    class="nav-link"
+                                    id="ex3-tab-3"
+                                    data-mdb-toggle="tab"
+                                    href="#ex3-tabs-3"
+                                    role="tab"
+                                    aria-controls="ex3-tabs-3"
+                                    aria-selected="false"
+                            >관심</a
+                            >
+                        </li>
+                    </ul>
+                    <!-- Tabs navs -->
 
-            </section>
+                    <!-- Tabs content -->
+                    <div class="tab-content border" id="ex2-content"  style="width: 420px; height: 540px; overflow: auto">
+                        <div class="tab-pane fade show active" id="ex3-tabs-1" role="tabpanel" aria-labelledby="ex3-tab-1">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">한글명</th>
+                                        <th scope="col">현재가</th>
+                                        <th scope="col">전일대비</th>
+                                        <th scope="col">거래대금</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <th:block th:each="item : ${upbitMarketList}">
+                                    <tr th:onclick="|location.href='@{/trade/order(code=${item.market})}'|">
+                                        <td style="font-weight: bold" th:text="${item.koreanName}">-</td>
+                                        <td style="font-weight: bold" th:id="${item.market} + '-trade_price'" class="text-align-table-right">-</td>
+                                        <td th:id="${item.market} + '-signed_change_rate'" class="text-align-table-right">-</td>
+                                        <td th:id="${item.market} + '-acc_trade_price_24h'" class="text-align-table-right">-</td>
+                                    </tr>
+                                </th:block>
+                                </tbody>
+                            </table>
+                        </div>
 
-            <section>
-                <!-- Tabs navs -->
-                <ul class="nav nav-tabs nav-justified" id="ex1" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <a
-                                class="nav-link active"
-                                id="ex3-tab-1"
-                                data-mdb-toggle="tab"
-                                href="#ex3-tabs-1"
-                                role="tab"
-                                aria-controls="ex3-tabs-1"
-                                aria-selected="true"
-                        >원화</a
-                        >
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <a
-                                class="nav-link"
-                                id="ex3-tab-2"
-                                data-mdb-toggle="tab"
-                                href="#ex3-tabs-2"
-                                role="tab"
-                                aria-controls="ex3-tabs-2"
-                                aria-selected="false"
-                        >보유</a
-                        >
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <a
-                                class="nav-link"
-                                id="ex3-tab-3"
-                                data-mdb-toggle="tab"
-                                href="#ex3-tabs-3"
-                                role="tab"
-                                aria-controls="ex3-tabs-3"
-                                aria-selected="false"
-                        >관심</a
-                        >
-                    </li>
-                </ul>
-                <!-- Tabs navs -->
+                        <div class="tab-pane fade" id="ex3-tabs-2" role="tabpanel" aria-labelledby="ex3-tab-2">
+                            Tab 2 content
+                        </div>
 
-                <!-- Tabs content -->
-                <div class="tab-content" id="ex2-content">
-                    <div class="tab-pane fade show active" id="ex3-tabs-1" role="tabpanel" aria-labelledby="ex3-tab-1">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th scope="col">한글명</th>
-                                    <th scope="col">현재가</th>
-                                    <th scope="col">전일대비</th>
-                                    <th scope="col">거래량</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            <th:block th:each="item : ${upbitMarketList}">
-                                <tr th:onclick="|location.href='@{/trade/order(code=${item.market})}'|">
-                                    <td th:text="${item.koreanName}">-</td>
-                                    <td th:id="${item.market} + '-trade_price'" class="text-align-table-right">-</td>
-                                    <td th:id="${item.market} + '-signed_change_rate'" class="text-align-table-right">-</td>
-                                    <td th:id="${item.market} + '-acc_trade_price_24h'" class="text-align-table-right">-</td>
-                                </tr>
-                            </th:block>
-
-                            </tbody>
-                        </table>
+                        <div class="tab-pane fade" id="ex3-tabs-3" role="tabpanel" aria-labelledby="ex3-tab-3">
+                            Tab 3 content
+                        </div>
                     </div>
+                    <!-- Tabs content -->
+                </section>
+            </div>
 
-                    <div class="tab-pane fade" id="ex3-tabs-2" role="tabpanel" aria-labelledby="ex3-tab-2">
-                        Tab 2 content
-                    </div>
-
-                    <div class="tab-pane fade" id="ex3-tabs-3" role="tabpanel" aria-labelledby="ex3-tab-3">
-                        Tab 3 content
-                    </div>
-                </div>
-                <!-- Tabs content -->
-            </section>
-        </div>
-
-        <!-- TradingView Widget BEGIN -->
-        <div class="tradingview-widget-container">
+            <!-- TradingView Widget BEGIN -->
             <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
             <script type="text/javascript">
                 // 암호화폐 symbol 위젯 불러오기
@@ -122,8 +119,10 @@
 
                 new TradingView.widget(
                     {
+                        "width": 900,
+                        "height": 540,
+                        // autosize: true,
                         custom_font_family: "'Noto Sans KR', sans-serif",
-                        autosize: false,
                         symbol: "UPBIT:" + pure_market_code + "KRW",
                         interval: "D",
                         timezone: "Asia/Seoul",
@@ -199,9 +198,8 @@
 
                         // 해당하는 암호화폐 html text 변경해준다
                         document.getElementById(crypto_code + '-trade_price').innerText = trade_price;
-                        document.getElementById(crypto_code + '-signed_change_rate').innerText = signed_change_rate;
+                        document.getElementById(crypto_code + '-signed_change_rate').innerText = signed_change_rate + "%";
                         document.getElementById(crypto_code + '-acc_trade_price_24h').innerText = acc_trade_price_24h;
-
                         // console.log(crypto_code + "현재가 : " + trade_price, "전일 대비 등락율" + signed_change_rate, "24시간 누적 거래대금 : " + acc_trade_price_24h);
                     }
                 } catch (err) {
@@ -211,6 +209,7 @@
 
             // 에러가 발생했을 때
             socket.onerror = function (e) {
+                console.log("업비트 웹소켓 연결 실패");
                 console.log(e);
             };
         </script>
