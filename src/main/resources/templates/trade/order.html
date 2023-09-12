@@ -13,7 +13,78 @@
     <body layout:fragment="content">
         <div class="container mt-3">
             <div class="d-flex">
-                <section id="order_info" th:insert="~{/trade/orderInfo :: orderInfoFragment}"></section>
+                <section>
+                    <div class="mb-4" id="order_info" th:insert="~{/trade/orderInfo :: orderInfoFragment}"></div>
+
+                    <div class="row" style="width: 924px">
+                        <div class="col-sm-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">BTC 매수</h5><hr>
+                                    <form action=""></form>
+                                    <div class="mb-3">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" disabled />
+                                            <label class="form-check-label" for="inlineRadio1">지정가</label>
+                                        </div>
+
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" />
+                                            <label class="form-check-label" for="inlineRadio2">시장가</label>
+                                        </div>
+                                    </div>
+                                    <dl style="display: flex">
+                                        <dt>매수 가능 금액</dt><dd style="margin-left: auto">5,000(KRW)</dd>
+                                    </dl>
+                                    <!--<div class="form-outline mb-3">
+                                        <input type="text" id="form3" class="form-control" />
+                                        <label class="form-label" for="form3">매수가격(KRW)</label>
+                                    </div>-->
+                                    <div class="form-outline mb-3">
+                                        <input type="text" id="form4" class="form-control" />
+                                        <label class="form-label" for="form4">주문총액(KRW)</label>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button class="btn btn-success" type="button">매수</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">BTC 매도</h5><hr>
+                                    <div class="mb-3">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option1" disabled />
+                                            <label class="form-check-label" for="inlineRadio3">지정가</label>
+                                        </div>
+
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio4" value="option2" />
+                                            <label class="form-check-label" for="inlineRadio4">시장가</label>
+                                        </div>
+                                    </div>
+                                    <dl style="display: flex">
+                                        <dt>매도 가능 금액</dt><dd style="margin-left: auto">5,000(KRW)</dd>
+                                    </dl>
+                                    <!--<div class="form-outline">
+                                        <input type="text" id="form1" class="form-control mb-3" />
+                                        <label class="form-label" for="form1">매도가격(KRW)</label>
+                                    </div>-->
+                                    <div class="form-outline">
+                                        <input type="text" id="form2" class="form-control mb-3" />
+                                        <label class="form-label" for="form2">주문총액(KRW)</label>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button class="btn btn-danger" type="button">매도</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
 
                 <section>
                     <!-- Tabs navs -->
@@ -30,7 +101,7 @@
                             >원화</a
                             >
                         </li>
-                        <li class="nav-item" role="presentation">
+                        <!--<li class="nav-item" role="presentation">
                             <a
                                     class="nav-link"
                                     id="ex3-tab-2"
@@ -53,12 +124,12 @@
                                     aria-selected="false"
                             >관심</a
                             >
-                        </li>
+                        </li>-->
                     </ul>
                     <!-- Tabs navs -->
 
                     <!-- Tabs content -->
-                    <div class="tab-content border" id="ex2-content"  style="width: 420px; height: 540px; overflow: auto">
+                    <div class="tab-content border" id="ex2-content"  style="width: 420px; height: 810px; overflow: auto">
                         <div class="tab-pane fade show active" id="ex3-tabs-1" role="tabpanel" aria-labelledby="ex3-tab-1">
                             <table class="table table-hover">
                                 <thead>
@@ -92,74 +163,6 @@
                     </div>
                     <!-- Tabs content -->
                 </section>
-            </div>
-
-            <div class="row" style="width: 924px">
-                <div class="col-sm-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">매수</h5><hr>
-                            <form action=""></form>
-                            <div class="mb-3">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" disabled />
-                                    <label class="form-check-label" for="inlineRadio1">지정가</label>
-                                </div>
-
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" />
-                                    <label class="form-check-label" for="inlineRadio2">시장가</label>
-                                </div>
-                            </div>
-                            <dl style="display: flex">
-                                <dt>매수 가능 금액</dt><dd style="margin-left: auto">5,000(KRW)</dd>
-                            </dl>
-                            <!--<div class="form-outline mb-3">
-                                <input type="text" id="form3" class="form-control" />
-                                <label class="form-label" for="form3">매수가격(KRW)</label>
-                            </div>-->
-                            <div class="form-outline mb-3">
-                                <input type="text" id="form4" class="form-control" />
-                                <label class="form-label" for="form4">주문총액(KRW)</label>
-                            </div>
-                            <div class="d-grid">
-                                <button class="btn btn-success" type="button">매수</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">매도</h5><hr>
-                            <div class="mb-3">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option1" disabled />
-                                    <label class="form-check-label" for="inlineRadio3">지정가</label>
-                                </div>
-
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio4" value="option2" />
-                                    <label class="form-check-label" for="inlineRadio4">시장가</label>
-                                </div>
-                            </div>
-                            <dl style="display: flex">
-                                <dt>매도 가능 금액</dt><dd style="margin-left: auto">5,000(KRW)</dd>
-                            </dl>
-                            <!--<div class="form-outline">
-                                <input type="text" id="form1" class="form-control mb-3" />
-                                <label class="form-label" for="form1">매도가격(KRW)</label>
-                            </div>-->
-                            <div class="form-outline">
-                                <input type="text" id="form2" class="form-control mb-3" />
-                                <label class="form-label" for="form2">주문총액(KRW)</label>
-                            </div>
-                            <div class="d-grid">
-                                <button class="btn btn-danger" type="button">매도</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
         </div>
