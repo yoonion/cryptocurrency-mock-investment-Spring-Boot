@@ -7,10 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import site.bitrun.cryptocurrency.global.api.coinmarketcap.domain.CryptoRank;
 import site.bitrun.cryptocurrency.domain.Member;
 import site.bitrun.cryptocurrency.dto.MemberLoginForm;
@@ -72,7 +69,8 @@ public class BasicController {
 
         // 파라미터 없으면 기본 비트코인으로 redirect 시킴
         if (StringUtils.isEmpty(code)) {
-            return "redirect:/trade/order?code=KRW-BTC";
+//            return "redirect:/trade/order?code=KRW-BTC";
+            code = "KRW-BTC";
         }
 
         // 쿼리 파라미터로 해당하는 암호화폐의 정보를 1개 가져온다.
@@ -88,10 +86,26 @@ public class BasicController {
         for (UpbitMarket upbitMarket : upbitMarketList) {
             marketListString.add(upbitMarket.getMarket());
         }
-        // System.out.println(marketListString);
+
         model.addAttribute("marketListString", marketListString);
 
         return "trade/order";
+    }
+
+    // 거래소 - market 코드별 암호화폐 order info 만들어서 return (차트 등..)
+    @GetMapping("/trade/order/{code}")
+    public String getOrderInfo(@PathVariable("code") String code, Model model) {
+
+        // 파라미터 없으면 기본 비트코인
+        if (StringUtils.isEmpty(code)) {
+            code = "KRW-BTC";
+        }
+
+        // 쿼리 파라미터로 해당하는 암호화폐의 정보를 1개 가져온다.
+        UpbitMarket findUpbitCryptoOne = upbitService.getUpbitMarketOne(code);
+        model.addAttribute("upbitCryptoInfo", findUpbitCryptoOne);
+
+        return "trade/orderInfo";
     }
 
     // 회원가입 view

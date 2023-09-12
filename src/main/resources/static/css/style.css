@@ -21,3 +21,11 @@ td, th { vertical-align: middle; }
 
     margin-bottom: 50px;
 }
+
+.buy-highlight {
+    border: 2px solid green;
+}
+
+.sell-highlight {
+    border: 2px solid red;
+}
