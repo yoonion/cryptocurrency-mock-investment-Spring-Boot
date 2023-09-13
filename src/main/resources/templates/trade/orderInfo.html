@@ -1,8 +1,8 @@
 <th:block th:fragment="orderInfoFragment">
     <div class="me-4">
         <div class="d-flex">
-            <span class="me-2"><h2 th:text="${upbitCryptoInfo.koreanName}">암호화폐 이름</h2></span>
-            <span th:text="${upbitCryptoInfo.market}" class="align-self-center"></span>
+            <span class="me-2"><h2 id="crypto_korean_name">-</h2></span>
+            <span class="align-self-center" id="crypto_symbol_name">-</span>
         </div>
         <!-- chart widget -->
         <div id="trading_chart_view"></div>
@@ -11,34 +11,58 @@
     <!-- TradingView Widget BEGIN -->
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script type="text/javascript">
-        // 암호화폐 symbol 위젯 불러오기
-        if(!(typeof pure_market_code && typeof crypto_market_code && typeof words)) {
-            let pure_market_code, crypto_market_code, words;
+
+        // 화면 로딩시 차트 및 정보 호출
+        window.addEventListener('DOMContentLoaded', function () {
+            getCryptoChart('KRW-BTC');
+        });
+
+        // 차트 & 암호화폐 정보
+        function getCryptoChart(marketCode) {
+
+            let temps = marketCode.split("-");
+            let chartSymbol = temps[1];
+
+            // chart
+            new TradingView.widget({
+                    "width": 900,
+                    "height": 500,
+                    // autosize: true,
+                    custom_font_family: "'Noto Sans KR', sans-serif",
+                    symbol: "UPBIT:" + chartSymbol + "KRW", // symbol: "UPBIT:BTCKRW"
+                    interval: "D",
+                    timezone: "Asia/Seoul",
+                    theme: "light",
+                    style: "1",
+                    locale: "kr",
+                    enable_publishing: false,
+                    allow_symbol_change: false,
+                    container_id: "trading_chart_view",
+                    "hide_side_toolbar": false,
+            });
+
+            // 암호화폐 정보 비동기 요청
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', '/api/crypto/' + marketCode);
+            xhr.send();
+            xhr.responseType = "json"; // 응답 데이터 타입 설정
+            xhr.onload = () => {
+
+                let resultJson = xhr.response;
+
+                if (xhr.status === 200) { // 성공
+                    console.log(resultJson);
+                    document.getElementById('crypto_korean_name').innerText = resultJson.koreanName; // 상단 한글명
+                    document.getElementById('crypto_symbol_name').innerText = resultJson.marketCode; // 상단 마켓코드
+                    document.getElementById('buy_symbol_name').innerText = `${resultJson.koreanName}(${resultJson.marketCode})`; // 하단 매수 마켓코드
+                    document.getElementById('sell_symbol_name').innerText = `${resultJson.koreanName}(${resultJson.marketCode})`; // 하단 매도 마켓코드
+                } else { // 실패
+                    console.error(xhr.status, xhr.statusText);
+                }
+            };
+
         }
 
-        crypto_market_code = '[[${upbitCryptoInfo.market}]]';
-        words = crypto_market_code.split("-")
-
-        pure_market_code = words[1];
-
-        new TradingView.widget(
-            {
-                "width": 900,
-                "height": 500,
-                // autosize: true,
-                custom_font_family: "'Noto Sans KR', sans-serif",
-                symbol: "UPBIT:" + pure_market_code + "KRW", // symbol: "UPBIT:BTCKRW"
-                interval: "D",
-                timezone: "Asia/Seoul",
-                theme: "light",
-                style: "1",
-                locale: "kr",
-                enable_publishing: false,
-                allow_symbol_change: false,
-                container_id: "trading_chart_view",
-                "hide_side_toolbar": false,
-            }
-        );
     </script>
     <!-- TradingView Widget END -->
 </th:block>

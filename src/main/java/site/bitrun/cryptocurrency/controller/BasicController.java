@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +13,6 @@ import site.bitrun.cryptocurrency.dto.MemberLoginForm;
 import site.bitrun.cryptocurrency.dto.MemberRegisterForm;
 import site.bitrun.cryptocurrency.global.api.coinmarketcap.service.CryptoService;
 import site.bitrun.cryptocurrency.global.api.upbit.domain.UpbitMarket;
-import site.bitrun.cryptocurrency.global.api.upbit.dto.UpbitMarketDto;
 import site.bitrun.cryptocurrency.global.api.upbit.service.UpbitService;
 import site.bitrun.cryptocurrency.service.MemberService;
 
@@ -65,17 +63,7 @@ public class BasicController {
 
     // 거래소
     @GetMapping("/trade/order")
-    public String viewChart(@RequestParam(name="code", required = false) String code, Model model) {
-
-        // 파라미터 없으면 기본 비트코인으로 redirect 시킴
-        if (StringUtils.isEmpty(code)) {
-//            return "redirect:/trade/order?code=KRW-BTC";
-            code = "KRW-BTC";
-        }
-
-        // 쿼리 파라미터로 해당하는 암호화폐의 정보를 1개 가져온다.
-        UpbitMarket findUpbitCryptoOne = upbitService.getUpbitMarketOne(code);
-        model.addAttribute("upbitCryptoInfo", findUpbitCryptoOne);
+    public String viewOrderPage(Model model) {
 
         // 오른쪽 side nav 를 위한 전체 리스트
         List<UpbitMarket> upbitMarketList = upbitService.getUpbitMarketList();
@@ -86,26 +74,9 @@ public class BasicController {
         for (UpbitMarket upbitMarket : upbitMarketList) {
             marketListString.add(upbitMarket.getMarket());
         }
-
         model.addAttribute("marketListString", marketListString);
 
         return "trade/order";
-    }
-
-    // 거래소 - market 코드별 암호화폐 order info 만들어서 return (차트 등..)
-    @GetMapping("/trade/order/{code}")
-    public String getOrderInfo(@PathVariable("code") String code, Model model) {
-
-        // 파라미터 없으면 기본 비트코인
-        if (StringUtils.isEmpty(code)) {
-            code = "KRW-BTC";
-        }
-
-        // 쿼리 파라미터로 해당하는 암호화폐의 정보를 1개 가져온다.
-        UpbitMarket findUpbitCryptoOne = upbitService.getUpbitMarketOne(code);
-        model.addAttribute("upbitCryptoInfo", findUpbitCryptoOne);
-
-        return "trade/orderInfo";
     }
 
     // 회원가입 view

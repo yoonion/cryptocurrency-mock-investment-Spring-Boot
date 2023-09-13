@@ -20,7 +20,7 @@
                         <div class="col-sm-6">
                             <div class="card">
                                 <div class="card-body">
-                                    <h5 class="card-title">BTC 매수</h5><hr>
+                                    <h5 class="card-title"><span id="buy_symbol_name">BTC</span> 매수</h5><hr>
                                     <form action=""></form>
                                     <div class="mb-3">
                                         <div class="form-check form-check-inline">
@@ -53,7 +53,7 @@
                         <div class="col-sm-6">
                             <div class="card">
                                 <div class="card-body">
-                                    <h5 class="card-title">BTC 매도</h5><hr>
+                                    <h5 class="card-title"><span id="sell_symbol_name">BTC</span> 매도</h5><hr>
                                     <div class="mb-3">
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option1" disabled />
@@ -142,7 +142,7 @@
                                 </thead>
                                 <tbody>
                                 <th:block th:each="item : ${upbitMarketList}">
-                                    <tr th:onclick="getCryptoOrderInfo([[${item.market}]])">
+                                    <tr th:onclick="getCryptoChart([[${item.market}]])">
                                         <td style="font-weight: bold" th:text="${item.koreanName}">-</td>
                                         <td style="font-weight: bold" th:id="${item.market} + '-trade_price'" class="text-align-table-right">-</td>
                                         <td th:id="${item.market} + '-signed_change_rate'" class="text-align-table-right">-</td>
