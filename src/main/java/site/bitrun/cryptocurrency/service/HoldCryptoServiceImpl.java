@@ -2,7 +2,6 @@ package site.bitrun.cryptocurrency.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -13,11 +12,10 @@ import org.springframework.web.client.RestTemplate;
 import site.bitrun.cryptocurrency.domain.HoldCrypto;
 import site.bitrun.cryptocurrency.domain.Member;
 import site.bitrun.cryptocurrency.global.api.upbit.domain.UpbitMarket;
+import site.bitrun.cryptocurrency.global.api.upbit.dto.UpbitTradePriceDto;
 import site.bitrun.cryptocurrency.global.api.upbit.repository.UpbitRepository;
 import site.bitrun.cryptocurrency.repository.HoldCryptoRepository;
 import site.bitrun.cryptocurrency.repository.MemberRepository;
-
-import java.util.Map;
 
 @Service
 public class HoldCryptoServiceImpl implements HoldCryptoService {
@@ -53,9 +51,9 @@ public class HoldCryptoServiceImpl implements HoldCryptoService {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // 필드로 선언한 데이터만 파싱
 
         // 현재 암호화폐의 가격 매핑해서 가져온다
-        TradePrice[] tradePrice = new TradePrice[0];
+        UpbitTradePriceDto[] tradePrice = new UpbitTradePriceDto[0];
         try {
-            tradePrice = objectMapper.readValue(response, TradePrice[].class);
+            tradePrice = objectMapper.readValue(response, UpbitTradePriceDto[].class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -92,27 +90,6 @@ public class HoldCryptoServiceImpl implements HoldCryptoService {
         long currentAsset = findMember.getAsset();
         long afterAsset = currentAsset - buyKrw;
         findMember.setAsset(afterAsset);
-    }
-
-    // 업비트 API 현재가 json과 매핑할 클래스
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    private static class TradePrice {
-        private String tradePrice;
-
-        public TradePrice() {
-        }
-
-        public TradePrice(String tradePrice) {
-            this.tradePrice = tradePrice;
-        }
-
-        public String getTradePrice() {
-            return tradePrice;
-        }
-
-        public void setTradePrice(String tradePrice) {
-            this.tradePrice = tradePrice;
-        }
     }
 
 }

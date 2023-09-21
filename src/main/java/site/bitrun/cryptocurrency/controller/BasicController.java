@@ -1,7 +1,6 @@
 package site.bitrun.cryptocurrency.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,13 +12,9 @@ import site.bitrun.cryptocurrency.domain.Member;
 import site.bitrun.cryptocurrency.dto.MemberLoginForm;
 import site.bitrun.cryptocurrency.dto.MemberRegisterForm;
 import site.bitrun.cryptocurrency.global.api.coinmarketcap.service.CryptoService;
-import site.bitrun.cryptocurrency.global.api.upbit.domain.UpbitMarket;
 import site.bitrun.cryptocurrency.global.api.upbit.service.UpbitService;
-import site.bitrun.cryptocurrency.service.HoldCryptoService;
 import site.bitrun.cryptocurrency.service.MemberService;
-import site.bitrun.cryptocurrency.session.SessionConst;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -29,14 +24,12 @@ public class BasicController {
     private final MemberService memberService;
     private final CryptoService cryptoService;
     private final UpbitService upbitService;
-    private final HoldCryptoService holdCryptoService;
 
     @Autowired
-    public BasicController(MemberService memberService, CryptoService cryptoService, UpbitService upbitService, HoldCryptoService holdCryptoService) {
+    public BasicController(MemberService memberService, CryptoService cryptoService, UpbitService upbitService) {
         this.memberService = memberService;
         this.cryptoService = cryptoService;
         this.upbitService = upbitService;
-        this.holdCryptoService = holdCryptoService;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,24 +59,6 @@ public class BasicController {
         return "index";
     }
 
-    // 거래소
-    @GetMapping("/trade/order")
-    public String viewOrderPage(Model model) {
-
-        // 오른쪽 side nav 를 위한 전체 리스트
-        List<UpbitMarket> upbitMarketList = upbitService.getUpbitMarketList();
-        model.addAttribute(upbitMarketList);
-
-        // upbit websocket 요청 json 부분 - 암호화폐 list json 요청에 넣어줄 것임
-        List<String> marketListString = new ArrayList<>();
-        for (UpbitMarket upbitMarket : upbitMarketList) {
-            marketListString.add(upbitMarket.getMarket());
-        }
-        model.addAttribute("marketListString", marketListString);
-
-        return "trade/order";
-    }
-
     // 회원가입 view
     @GetMapping("/member/register")
     public String memberRegisterForm(@ModelAttribute MemberRegisterForm memberRegisterForm) {
@@ -111,6 +86,7 @@ public class BasicController {
             return "memberRegisterForm";
         }
 
+        // 새로운 회원 가입
         Member newMember = new Member(memberRegisterForm.getUsername(), memberRegisterForm.getEmail(), memberRegisterForm.getPassword(), 10000000);
         memberService.memberRegister(newMember);
 
@@ -153,30 +129,4 @@ public class BasicController {
         return "redirect:/";
     }
 
-    // 매수
-    @PostMapping("/crypto/buy")
-    public String cryptoBuy(
-            @RequestParam(name = "buy_market_code") String buyMarketCode,
-            @RequestParam(name = "buy_price") long buyKrw,
-            HttpServletRequest request) {
-
-        HttpSession session = request.getSession(false);
-        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
-
-        holdCryptoService.buyCrypto(loginMember.getId(), buyMarketCode, buyKrw);
-
-        return "redirect:/trade/order";
-    }
-
-    // 매도
-    /*@PostMapping("/crypto/sell")
-    @ResponseBody
-    public String cryptoSell(
-            @RequestParam(name = "buy_market_code") String buyMarketCode,
-            @RequestParam(name = "buy_price") String buyPrice) {
-        System.out.println("buyMarketCode = " + buyMarketCode);
-        System.out.println("buyPrice = " + buyPrice);
-
-        return "ok";
-    }*/
 }

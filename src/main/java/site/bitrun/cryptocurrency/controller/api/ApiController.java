@@ -1,15 +1,11 @@
 package site.bitrun.cryptocurrency.controller.api;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import site.bitrun.cryptocurrency.global.api.upbit.domain.UpbitMarket;
 import site.bitrun.cryptocurrency.global.api.upbit.service.UpbitService;
-
-import java.util.List;
 
 @RestController
 public class ApiController {
