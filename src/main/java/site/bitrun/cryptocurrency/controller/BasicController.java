@@ -1,6 +1,7 @@
 package site.bitrun.cryptocurrency.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +15,9 @@ import site.bitrun.cryptocurrency.dto.MemberRegisterForm;
 import site.bitrun.cryptocurrency.global.api.coinmarketcap.service.CryptoService;
 import site.bitrun.cryptocurrency.global.api.upbit.domain.UpbitMarket;
 import site.bitrun.cryptocurrency.global.api.upbit.service.UpbitService;
+import site.bitrun.cryptocurrency.service.HoldCryptoService;
 import site.bitrun.cryptocurrency.service.MemberService;
+import site.bitrun.cryptocurrency.session.SessionConst;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +29,14 @@ public class BasicController {
     private final MemberService memberService;
     private final CryptoService cryptoService;
     private final UpbitService upbitService;
+    private final HoldCryptoService holdCryptoService;
 
     @Autowired
-    public BasicController(MemberService memberService, CryptoService cryptoService, UpbitService upbitService) {
+    public BasicController(MemberService memberService, CryptoService cryptoService, UpbitService upbitService, HoldCryptoService holdCryptoService) {
         this.memberService = memberService;
         this.cryptoService = cryptoService;
         this.upbitService = upbitService;
+        this.holdCryptoService = holdCryptoService;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -106,11 +111,11 @@ public class BasicController {
             return "memberRegisterForm";
         }
 
-        Member newMember = new Member(memberRegisterForm.getUsername(), memberRegisterForm.getEmail(), memberRegisterForm.getPassword());
+        Member newMember = new Member(memberRegisterForm.getUsername(), memberRegisterForm.getEmail(), memberRegisterForm.getPassword(), 10000000);
         memberService.memberRegister(newMember);
 
         // 성공했다면 로그인까지 처리한다.
-         memberService.memberLogin(memberRegisterForm.getEmail(), memberRegisterForm.getPassword(), request);
+        memberService.memberLogin(memberRegisterForm.getEmail(), memberRegisterForm.getPassword(), request);
 
         return "redirect:/";
     }
@@ -148,4 +153,30 @@ public class BasicController {
         return "redirect:/";
     }
 
+    // 매수
+    @PostMapping("/crypto/buy")
+    public String cryptoBuy(
+            @RequestParam(name = "buy_market_code") String buyMarketCode,
+            @RequestParam(name = "buy_price") long buyKrw,
+            HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false);
+        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        holdCryptoService.buyCrypto(loginMember.getId(), buyMarketCode, buyKrw);
+
+        return "redirect:/trade/order";
+    }
+
+    // 매도
+    /*@PostMapping("/crypto/sell")
+    @ResponseBody
+    public String cryptoSell(
+            @RequestParam(name = "buy_market_code") String buyMarketCode,
+            @RequestParam(name = "buy_price") String buyPrice) {
+        System.out.println("buyMarketCode = " + buyMarketCode);
+        System.out.println("buyPrice = " + buyPrice);
+
+        return "ok";
+    }*/
 }

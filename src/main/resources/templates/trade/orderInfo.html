@@ -12,13 +12,13 @@
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script type="text/javascript">
 
-        // 화면 로딩시 차트 및 정보 호출
+        // 화면 로딩시 비트코인 차트 및 정보 호출
         window.addEventListener('DOMContentLoaded', function () {
-            getCryptoChart('KRW-BTC');
+            getCryptoChartAndData('KRW-BTC');
         });
 
         // 차트 & 암호화폐 정보
-        function getCryptoChart(marketCode) {
+        function getCryptoChartAndData(marketCode) {
 
             let temps = marketCode.split("-");
             let chartSymbol = temps[1];
@@ -56,6 +56,8 @@
                     document.getElementById('crypto_symbol_name').innerText = resultJson.marketCode; // 상단 마켓코드
                     document.getElementById('buy_symbol_name').innerText = `${resultJson.koreanName}(${resultJson.marketCode})`; // 하단 매수 마켓코드
                     document.getElementById('sell_symbol_name').innerText = `${resultJson.koreanName}(${resultJson.marketCode})`; // 하단 매도 마켓코드
+                    document.getElementById('buy_market_code').value = marketCode; // 넘겨줄 매수 암호화폐 market code
+                    document.getElementById('sell_market_code').value = marketCode; // 넘겨줄 매도 암호화폐 market code
                 } else { // 실패
                     console.error(xhr.status, xhr.statusText);
                 }

@@ -103,6 +103,7 @@ socket.onerror = function (e) {
 };
 
 // 암호화폐별 주문 정보 가져와 변경(비동기)
+/*
 let getCryptoOrderInfo = (market_code) => {
 
     const xhr = new XMLHttpRequest();
@@ -124,4 +125,4 @@ let getCryptoOrderInfo = (market_code) => {
         console.log('xhr error !!');
     };
 
-}
+}*/

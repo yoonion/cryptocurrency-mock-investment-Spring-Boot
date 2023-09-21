@@ -15,14 +15,16 @@ public class Member {
     private String username;
     private String email;
     private String password;
+    private long asset; // 보유자산
 
-    public Member() {
-    }
-
-    public Member(String username, String email, String password) {
+    public Member(String username, String email, String password, long asset) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.asset = asset;
+    }
+
+    public Member() {
     }
 
     public Long getId() {
@@ -57,4 +59,11 @@ public class Member {
         this.password = password;
     }
 
+    public long getAsset() {
+        return asset;
+    }
+
+    public void setAsset(long asset) {
+        this.asset = asset;
+    }
 }
