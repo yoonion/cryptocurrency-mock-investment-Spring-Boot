@@ -10,8 +10,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import site.bitrun.cryptocurrency.domain.HoldCrypto;
 import site.bitrun.cryptocurrency.domain.Member;
 import site.bitrun.cryptocurrency.dto.BuyCryptoForm;
+import site.bitrun.cryptocurrency.dto.HoldCryptoDto;
 import site.bitrun.cryptocurrency.global.api.upbit.domain.UpbitMarket;
 import site.bitrun.cryptocurrency.global.api.upbit.service.UpbitService;
 import site.bitrun.cryptocurrency.service.HoldCryptoService;
@@ -71,6 +73,19 @@ public class TradeController {
         }
 
         return "redirect:/trade/order";
+    }
+
+    // 보유자산 view
+    @GetMapping("/trade/hold/crypto")
+    public String viewHoldCryptoPage(Model model, HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false);
+        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        List<HoldCryptoDto> holdCryptoList = holdCryptoService.getHoldCryptoList(loginMember.getId());
+        model.addAttribute("holdCryptoList", holdCryptoList);
+
+        return "trade/holdCrypto";
     }
 
 }

@@ -11,11 +11,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import site.bitrun.cryptocurrency.domain.HoldCrypto;
 import site.bitrun.cryptocurrency.domain.Member;
+import site.bitrun.cryptocurrency.dto.HoldCryptoDto;
 import site.bitrun.cryptocurrency.global.api.upbit.domain.UpbitMarket;
 import site.bitrun.cryptocurrency.global.api.upbit.dto.UpbitTradePriceDto;
 import site.bitrun.cryptocurrency.global.api.upbit.repository.UpbitRepository;
 import site.bitrun.cryptocurrency.repository.HoldCryptoRepository;
 import site.bitrun.cryptocurrency.repository.MemberRepository;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class HoldCryptoServiceImpl implements HoldCryptoService {
@@ -92,4 +97,32 @@ public class HoldCryptoServiceImpl implements HoldCryptoService {
         findMember.setAsset(afterAsset);
     }
 
+    @Override
+    public List<HoldCryptoDto> getHoldCryptoList(long memberId) {
+
+        List<HoldCrypto> holdCryptoList = holdCryptoRepository.findByMemberId(memberId);
+
+        List<HoldCryptoDto> holdCryptoDtos = new ArrayList<>();
+        for (HoldCrypto holdCrypto : holdCryptoList) {
+            UpbitMarket findCrypto = upbitRepository.findById(holdCrypto.getUpbitMarket().getId())
+                    .orElseThrow(NullPointerException::new);
+
+            // 마켓코드에서 KRW-BTC 에서, 'BTC' 만 가져옴(symbol만 가져옴)
+            String[] marketCodeSplit = findCrypto.getMarket().split("-");
+            String marketCodeOnlySymbol = marketCodeSplit[1];
+
+            HoldCryptoDto holdCryptoDto = new HoldCryptoDto(
+                    findCrypto.getMarket(),
+                    marketCodeOnlySymbol,
+                    findCrypto.getKoreanName(),
+                    holdCrypto.getBuyCryptoCount(),
+                    holdCrypto.getBuyAverage(),
+                    holdCrypto.getBuyTotalKrw()
+            );
+
+            holdCryptoDtos.add(holdCryptoDto);
+        }
+
+        return holdCryptoDtos;
+    }
 }

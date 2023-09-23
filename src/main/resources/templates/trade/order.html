@@ -50,8 +50,11 @@
                                             <input type="text" id="buyKrw" name="buyKrw" class="form-control" />
                                             <label class="form-label" for="buyKrw">주문총액(KRW)</label>
                                         </div>
-                                        <div class="d-grid">
+                                        <div class="d-grid" th:if="${session.loginMember != null}">
                                             <button class="btn btn-success" type="submit">매수</button>
+                                        </div>
+                                        <div class="d-grid" th:if="${session.loginMember == null}">
+                                            <button class="btn btn-success" type="button" th:onclick="|location.href='@{/member/login}'|">로그인</button>
                                         </div>
                                     </div>
                                 </div>
@@ -90,8 +93,11 @@
                                             <input type="text" id="sell_price" name="sell_price" class="form-control" />
                                             <label class="form-label" for="sell_price">주문총액(KRW)</label>
                                         </div>
-                                        <div class="d-grid">
+                                        <div class="d-grid" th:if="${session.loginMember != null}">
                                             <button class="btn btn-danger" type="submit">매도</button>
+                                        </div>
+                                        <div class="d-grid" th:if="${session.loginMember == null}">
+                                            <button class="btn btn-danger" type="button" th:onclick="|location.href='@{/member/login}'|">로그인</button>
                                         </div>
                                     </div>
                                 </div>

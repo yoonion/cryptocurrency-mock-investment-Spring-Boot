@@ -62,7 +62,7 @@ public class BasicController {
     // 회원가입 view
     @GetMapping("/member/register")
     public String memberRegisterForm(@ModelAttribute MemberRegisterForm memberRegisterForm) {
-        return "memberRegisterForm";
+        return "member/memberRegisterForm";
     }
 
     // 회원가입
@@ -70,20 +70,20 @@ public class BasicController {
     public String memberRegister(@Validated @ModelAttribute MemberRegisterForm memberRegisterForm, BindingResult bindingResult, HttpServletRequest request) {
 
         if (bindingResult.hasErrors()) {
-            return "memberRegisterForm";
+            return "member/memberRegisterForm";
         }
 
         // 비밀번호 확인
         if (!memberRegisterForm.getPassword().equals(memberRegisterForm.getPassword2())) {
             bindingResult.rejectValue("password2", "differentPassword", "패스워드가 일치하지 않습니다.");
-            return "memberRegisterForm";
+            return "member/memberRegisterForm";
         }
 
         // 중복 체크
         // true 일 경우 중복
         if (memberService.memberCheckDuplicate(memberRegisterForm.getEmail())) {
             bindingResult.reject("emailDuplicate", "이미 존재하는 회원입니다."); // global error
-            return "memberRegisterForm";
+            return "member/memberRegisterForm";
         }
 
         // 새로운 회원 가입
@@ -99,7 +99,7 @@ public class BasicController {
     // 로그인 view
     @GetMapping("/member/login")
     public String memberLoginForm(@ModelAttribute MemberLoginForm memberLoginForm) {
-        return "memberLoginForm";
+        return "member/memberLoginForm";
     }
 
     // 로그인 처리
@@ -107,7 +107,7 @@ public class BasicController {
     public String memberLogin(@Validated @ModelAttribute MemberLoginForm memberLoginForm, BindingResult bindingResult, HttpServletRequest request) {
 
         if (bindingResult.hasErrors()) {
-            return "memberLoginForm";
+            return "member/memberLoginForm";
         }
 
         Member loginMember = memberService.memberLogin(memberLoginForm.getEmail(), memberLoginForm.getPassword(), request);
@@ -115,7 +115,7 @@ public class BasicController {
         // 로그인 실패시
         if (loginMember == null) {
             bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다."); // global error
-            return "memberLoginForm";
+            return "member/memberLoginForm";
         }
 
         return "redirect:/";
