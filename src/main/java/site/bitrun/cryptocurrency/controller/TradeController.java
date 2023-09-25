@@ -85,6 +85,13 @@ public class TradeController {
         List<HoldCryptoDto> holdCryptoList = holdCryptoService.getHoldCryptoList(loginMember.getId());
         model.addAttribute("holdCryptoList", holdCryptoList);
 
+        // 보유한 암호화폐 upbit websocket 요청 json 부분 - 암호화폐 list json 요청
+        List<String> marketListString = new ArrayList<>();
+        for (HoldCryptoDto holdCrypto : holdCryptoList) {
+            marketListString.add(holdCrypto.getMarketCode());
+        }
+        model.addAttribute("marketListString", marketListString);
+
         return "trade/holdCrypto";
     }
 

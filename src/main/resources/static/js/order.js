@@ -101,28 +101,3 @@ socket.onerror = function (e) {
     console.log("업비트 웹소켓 연결 실패");
     console.log(e);
 };
-
-// 암호화폐별 주문 정보 가져와 변경(비동기)
-/*
-let getCryptoOrderInfo = (market_code) => {
-
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", "/trade/order/" + market_code);
-    xhr.send();
-
-    xhr.onload = () => {
-        let response_status_code = xhr.status;
-        let responseHtmlString = xhr.response;   // 요청에 대한 응답
-
-        if (response_status_code === 200) {
-            // let order_info = document.getElementById('order_info');
-            // order_info.insertAdjacentHTML("afterend", responseHtmlString);
-            $('#order_info').html(responseHtmlString);
-        }
-    };
-
-    xhr.onerror = () => {
-        console.log('xhr error !!');
-    };
-
-}*/

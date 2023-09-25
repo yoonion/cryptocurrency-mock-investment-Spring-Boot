@@ -30,40 +30,97 @@
                                 </div>
                             </div>
                         </td>
-                        <td><span th:text="${holdCrypto.holdCount}">0.03535</span><span class="text-muted ms-1" th:text="${holdCrypto.marketCodeOnlySymbol}">BTC</span></td><!-- 보유수량 -->
-                        <td><span th:text="${holdCrypto.buyAverage}">21,943,430</span><span class="text-muted ms-1">KRW</span></td><!-- 매수평균가 -->
-                        <td><span th:text="${holdCrypto.buyTotalKrw}">21,943,430</span><span class="text-muted ms-1">KRW</span></td><!-- 매수금액 -->
-                        <td><span>21,943,430</span><span class="text-muted ms-1">KRW</span></td><!-- 평가금액 -->
-                        <td><i class="fas fa-caret-up me-1"></i><span>+48.8%</span></td> <!-- 평가손익 -->
+                        <td><span th:id="|${holdCrypto.marketCode}-hold-count|" th:text="${#numbers.formatDecimal(holdCrypto.holdCount,1,'COMMA',8,'POINT')}">0.03535</span><span class="text-muted ms-1" th:text="${holdCrypto.marketCodeOnlySymbol}">BTC</span></td><!-- 보유수량 -->
+                        <td><span th:id="|${holdCrypto.marketCode}-buy-average|" th:text="${#numbers.formatDecimal(holdCrypto.buyAverage,1,'COMMA',4,'POINT')}">21,943,430</span><span class="text-muted ms-1">KRW</span></td><!-- 매수평균가 -->
+                        <td><span th:id="|${holdCrypto.marketCode}-buy-total-krw|" th:text="${#numbers.formatInteger(holdCrypto.buyTotalKrw,1,'COMMA')}">21,943,430</span><span class="text-muted ms-1">KRW</span></td><!-- 매수금액 -->
+                        <td><span class="fw-bold" th:id="|${holdCrypto.marketCode}-evaluation-krw|">21,943,430</span><span class="text-muted ms-1">KRW</span></td><!-- 평가금액 -->
+                        <td>
+                            <p class="mb-1"><span th:id="|${holdCrypto.marketCode}-krw-of-return|">-</span><span class="text-muted ms-1">KRW</span></p>  <!-- 평가 손익 -->
+                            <p class="mb-0"><span th:id="|${holdCrypto.marketCode}-rate-of-return|">-</span><span class="text-muted">%</span></p>  <!-- 수익률 -->
+                            <!--<i class="fas fa-caret-up me-1"></i><span>48.8%</span>-->
+                        </td>
                     </tr>
-
-                    <!--<tr>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <img src="https://static.upbit.com/logos/ETH.png" class="rounded-circle" alt="" style="width: 45px; height: 45px" />
-                                <div class="ms-3">
-                                    <p class="fw-bold mb-1">이더리움</p>
-                                    <p class="text-muted mb-0">ETH</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            0.03535 ETH
-                        </td>
-                        <td>
-                            1,908,776 KRW
-                        </td>
-                        <td><span>21,943,430</span><span class="text-muted">KRW</span></td>
-                        <td>
-                            <span>21,943,430</span><span class="text-muted">KRW</span>
-                        </td>
-                        <td>
-                            <i class="fas fa-caret-down me-1"></i><span>-48.8%</span>
-                        </td>
-                    </tr>-->
-
                 </tbody>
             </table>
         </div>
+    <script th:inline="javascript">
+        const marketCodeListForWebsocket = [[${marketListString}]];
+
+        // 웹소켓 생성
+        const upbitWebsocketUrl = "wss://api.upbit.com/websocket/v1";
+        const socket = new WebSocket(upbitWebsocketUrl);
+
+        // 커넥션이 제대로 생성되었을 때
+        socket.onopen = function (e) {
+            console.log("웹 소켓 연결 성공")
+            let jsonData = [
+                {
+                    "ticket": "test example"
+                },
+                {
+                    "type": "ticker", // 현재가
+                    "codes": marketCodeListForWebsocket // ["KRW-BTC", "KRW-NEO" ... ] - order.html 에서 전역으로 넘어온 값
+                },
+            ];
+
+            socket.send(JSON.stringify(jsonData))
+        };
+
+        // 데이터를 수신 받았을 때
+        socket.onmessage = async function (e) {
+            try {
+                if (e !== null && e !== undefined) {
+                    let result = JSON.parse(await e.data.text()); // blob to json
+                    console.log(result);
+
+                    // 웹소켓 type 구분 - ticker(현재가), trade(체결)
+                    let type = result.type;
+
+                    // 암호화폐 마켓 코드
+                    let crypto_code = result.code; // ex) KRW-BTC, KRW-NEO ...
+
+                    // =============================================
+                    // ticker(현재가) 응답
+                    // =============================================
+                    if (type === 'ticker') {
+                        // 암호화폐 현재가 socket response
+                        let now_trade_price = result.trade_price;
+
+                        // 평가 금액 계산 (보유수량 * 현재가)
+                        let hold_count_string = document.getElementById(crypto_code + '-hold-count').innerText;
+                        let hold_count = hold_count_string.replaceAll(',', '');
+                        let evaluation_krw = now_trade_price * hold_count;
+                        evaluation_krw = Math.round(evaluation_krw); // 평가금액 (KRW)
+
+                        // 평가금액 html text 변경
+                        document.getElementById(crypto_code + '-evaluation-krw').innerText = new Intl.NumberFormat('ko-kr').format(evaluation_krw);
+
+                        // 수익률 계산 - 수익률(%) = (평가금액 / 매수금액) * 100 - 100
+                        // 매수 금액 (KRW)
+                        let buy_total_krw = document.getElementById(crypto_code + '-buy-total-krw').innerText;
+                        buy_total_krw = buy_total_krw.replaceAll(',', '');
+
+                        // 수익률
+                        let rate_of_return = (evaluation_krw / buy_total_krw) * 100 - 100;
+                        rate_of_return = Math.round(rate_of_return * 100) / 100;
+                        document.getElementById(crypto_code + '-rate-of-return').innerText = rate_of_return;
+
+                        // 평가 손익 (KRW)
+                        let krw_of_return = evaluation_krw - buy_total_krw; // 순 투자 손익 (KRW)
+                        document.getElementById(crypto_code + '-krw-of-return').innerText = new Intl.NumberFormat('ko-kr').format(krw_of_return);
+                    }
+
+                }
+            } catch (err) {
+                console.log("ERROR !!" + err);
+            }
+        };
+
+        // 에러가 발생했을 때
+        socket.onerror = function (e) {
+            console.log("업비트 웹소켓 연결 실패");
+            console.log(e);
+        };
+    </script>
     </body>
 </html>

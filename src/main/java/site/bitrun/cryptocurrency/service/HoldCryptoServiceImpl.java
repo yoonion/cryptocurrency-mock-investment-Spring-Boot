@@ -82,12 +82,17 @@ public class HoldCryptoServiceImpl implements HoldCryptoService {
             double beforeBuyCryptoCount = findHoldCrypto.getBuyCryptoCount(); // 이전 보유중인 암호화폐 개수
             long totalBuyKrw = findHoldCrypto.getBuyTotalKrw() + buyKrw; // 총 매수 금액(KRW)
 
-            double totalBuyCryptoCount = findHoldCrypto.getBuyCryptoCount() + buyCryptoCount; // 총 매수 암호화폐 개수
-            double newBuyAverage = (beforeBuyAverage * beforeBuyCryptoCount + buyKrw) / totalBuyCryptoCount; // 새로운 평단가
+            // 총 매수 암호화폐 개수
+            double newBuyCryptoCount = findHoldCrypto.getBuyCryptoCount() + buyCryptoCount;
+            double totalBuyCryptoCount = Math.round(newBuyCryptoCount * 100000000) / 100000000.0;
+
+            // 매수 후 새로운 평단가
+            double newBuyAverage = (beforeBuyAverage * beforeBuyCryptoCount + buyKrw) / totalBuyCryptoCount;
+            double totalBuyAverage = Math.round(newBuyAverage * 100000000) / 100000000.0; // 소수점 8째자리 까지 반올림
 
             // 매수 정보 업데이트
             findHoldCrypto.setBuyCryptoCount(totalBuyCryptoCount);
-            findHoldCrypto.setBuyAverage(newBuyAverage);
+            findHoldCrypto.setBuyAverage(totalBuyAverage);
             findHoldCrypto.setBuyTotalKrw(totalBuyKrw);
         }
 
