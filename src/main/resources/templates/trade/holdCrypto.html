@@ -35,9 +35,8 @@
                         <td class="text-align-table-right"><span th:id="|${holdCrypto.marketCode}-buy-total-krw|" th:text="${#numbers.formatInteger(holdCrypto.buyTotalKrw,1,'COMMA')}">21,943,430</span><span class="text-muted ms-1">KRW</span></td><!-- 매수금액 -->
                         <td class="text-align-table-right" style="background-color: #F5F5F5"><span class="fw-bold" th:id="|${holdCrypto.marketCode}-evaluation-krw|">21,943,430</span><span class="text-muted ms-1">KRW</span></td><!-- 평가금액 -->
                         <td class="text-align-table-right">
-                            <p class="mb-1"><span th:id="|${holdCrypto.marketCode}-krw-of-return|">-</span><span class="text-muted ms-1">KRW</span></p>  <!-- 평가 손익 -->
-                            <p class="mb-0"><span th:id="|${holdCrypto.marketCode}-rate-of-return|">-</span><span class="text-muted">%</span></p>  <!-- 수익률 -->
-                            <!--<i class="fas fa-caret-up me-1"></i><span>48.8%</span>-->
+                            <p class="mb-1"><span class="fw-bold" th:id="|${holdCrypto.marketCode}-krw-of-return|">-</span><span class="text-muted ms-1">KRW</span></p>  <!-- 평가 손익 -->
+                            <p class="mb-0"><span class="fw-bold" th:id="|${holdCrypto.marketCode}-rate-of-return|">-</span><span class="text-muted">%</span></p>  <!-- 수익률 -->
                         </td>
                     </tr>
                 </tbody>
@@ -104,10 +103,18 @@
                         let rate_of_return_dom = document.getElementById(crypto_code + '-rate-of-return');
                         let rate_of_return = (evaluation_krw / buy_total_krw) * 100 - 100;
                         rate_of_return = Math.round(rate_of_return * 100) / 100;
-                        rate_of_return_dom.innerText = rate_of_return;
+                        if (rate_of_return > 0) {
+                            rate_of_return_dom.innerText = '+' + rate_of_return.toFixed(2);
+                        } else {
+                            rate_of_return_dom.innerText = rate_of_return.toFixed(2);
+                        }
+
+                        // font color
                         if (rate_of_return < 0) {
+                            rate_of_return_dom.classList.remove('text-up');
                             rate_of_return_dom.classList.add('text-down');
                         } else if (rate_of_return > 0) {
+                            rate_of_return_dom.classList.remove('text-down');
                             rate_of_return_dom.classList.add('text-up');
                         } else if (rate_of_return === 0) {
                             rate_of_return_dom.classList.remove('text-down');
@@ -117,7 +124,14 @@
                         // 평가 손익 (KRW)
                         let krw_of_return_dom = document.getElementById(crypto_code + '-krw-of-return');
                         let krw_of_return = evaluation_krw - buy_total_krw; // 순 투자 손익 (KRW)
-                        krw_of_return_dom.innerText = new Intl.NumberFormat('ko-kr').format(krw_of_return);
+
+                        if (krw_of_return > 0) {
+                            krw_of_return_dom.innerText = '+' + new Intl.NumberFormat('ko-kr').format(krw_of_return);
+                        } else {
+                            krw_of_return_dom.innerText = new Intl.NumberFormat('ko-kr').format(krw_of_return);
+                        }
+
+                        // font color
                         if (krw_of_return < 0) {
                             krw_of_return_dom.classList.remove('text-up');
                             krw_of_return_dom.classList.add('text-down');
