@@ -118,7 +118,7 @@ public class BasicController {
             return "member/memberLoginForm";
         }
 
-        return "redirect:/";
+        return "redirect:/trade/order";
     }
 
     // 로그아웃

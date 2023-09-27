@@ -5,11 +5,45 @@
       layout:decorate="~{fragments/layout}">
     <head>
         <title>보유자산</title>
+        <style>
+            .hold_amount_title_cell {
+                width: 330px;
+            }
+            
+            .hold_amount_count_cell {
+                margin-left: auto;
+            }
+        </style>
     </head>
     <body layout:fragment="content">
         <div class="container">
-            <table class="table align-middle mb-0 bg-white">
-                <thead class="bg-light">
+            <div class="mt-4">
+                <h2 style="text-align: center">보유자산</h2>
+                <div class="row" style="align-items: center; height: 300px">
+                    <div class="col-sm-6">
+                        <div class="d-flex border-bottom">
+                            <dl class="d-flex me-5 hold_amount_title_cell"><dt>보유 KRW</dt><dd class="hold_amount_count_cell"><span>853,352</span><span>KRW</span></dd></dl>
+                            <dl class="d-flex hold_amount_title_cell"><dt>총 보유자산</dt><dd class="hold_amount_count_cell">4,593,324 KRW</dd></dl>
+                        </div>
+                        <div class="d-flex">
+                            <dl class="d-flex me-5 hold_amount_title_cell mt-4"><dt>총매수금액</dt><dd class="hold_amount_count_cell">90,000 KRW</dd></dl>
+                            <dl class="d-flex hold_amount_title_cell mt-4"><dt>총평가손익</dt><dd class="hold_amount_count_cell text-up fw-bold">+5,000 KRW</dd></dl>
+                        </div>
+                        <div class="d-flex">
+                            <dl class="d-flex me-5 hold_amount_title_cell"><dt>총평가금액</dt><dd class="hold_amount_count_cell">5,000,000 KRW</dd></dl>
+                            <dl class="d-flex hold_amount_title_cell"><dt>총평가수익률</dt><dd class="hold_amount_count_cell text-up fw-bold">+7.85%</dd></dl>
+                        </div>
+                    </div>
+                    <div class="col-sm-6" style="text-align: center">
+                        <canvas id="hold_amount_chart" style="display: inline; height: 200px"></canvas>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="border-top">
+                <table class="table align-middle mb-0 bg-white">
+                    <thead class="bg-light">
                     <tr class="text-center">
                         <th>보유자산</th>
                         <th>보유수량</th>
@@ -18,8 +52,8 @@
                         <th>평가금액</th>
                         <th>평가손익(%)</th>
                     </tr>
-                </thead>
-                <tbody>
+                    </thead>
+                    <tbody>
                     <tr th:each="holdCrypto : ${holdCryptoList}">
                         <td>
                             <div class="d-flex align-items-center">
@@ -39,8 +73,10 @@
                             <p class="mb-0"><span class="fw-bold" th:id="|${holdCrypto.marketCode}-rate-of-return|">-</span><span class="text-muted">%</span></p>  <!-- 수익률 -->
                         </td>
                     </tr>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
+
         </div>
     <script th:inline="javascript">
         const marketCodeListForWebsocket = [[${marketListString}]];
@@ -70,7 +106,7 @@
             try {
                 if (e !== null && e !== undefined) {
                     let result = JSON.parse(await e.data.text()); // blob to json
-                    console.log(result);
+                    // console.log(result);
 
                     // 웹소켓 type 구분 - ticker(현재가), trade(체결)
                     let type = result.type;
@@ -155,6 +191,49 @@
             console.log("업비트 웹소켓 연결 실패");
             console.log(e);
         };
+
+        /**
+         * Chart.js - 보유자산 포트폴리오 차트
+         * hold_amount_chart
+         */
+        const data = {
+            labels: [
+                'test1',
+                'test2',
+                'test2',
+                'test2',
+                'test2',
+                'test2',
+                'test3'
+            ],
+            datasets: [{
+                label: 'My First Dataset',
+                data: [300, 50, 100, 50, 60, 70, 80, 90],
+                backgroundColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(54, 162, 235)',
+                    'rgb(255, 205, 86)'
+                ],
+                hoverOffset: 4
+            }]
+        };
+
+        new Chart(
+            document.getElementById('hold_amount_chart'), {
+                type: 'doughnut',
+                data: data,
+                options: {
+                    // borderWidth: 180,
+                    responsive: false,
+                    plugins: {
+                        legend: {
+                            // display: false,
+                            position: 'left',
+                        }
+                    }
+                },
+            }
+        );
     </script>
     </body>
 </html>
