@@ -12,4 +12,6 @@ public interface MemberService {
     Member memberLogin(String email, String password, HttpServletRequest request);
 
     void memberLogout(HttpServletRequest request);
+
+    Member getMemberInfo(long memberId);
 }

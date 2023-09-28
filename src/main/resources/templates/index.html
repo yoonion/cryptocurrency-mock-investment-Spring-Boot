@@ -39,7 +39,7 @@
                         <td style="text-align: right;"><img style="max-width: 32px" th:src="|https://s2.coinmarketcap.com/static/img/coins/32x32/${crypto.apiCryptoId}.png|"></td>
                         <td th:text="|${crypto.name} (${crypto.symbol})|">name</td>
                         <td class="text-align-table-right" th:text="${crypto.quote.usd.price}">price</td>
-                        <td class="text-align-table-right" th:text="'$' + ${#numbers.formatInteger(crypto.quote.usd.marketCap, 3, 'COMMA')}">marketCap</td>
+                        <td class="text-align-table-right fw-bold" th:text="'$' + ${#numbers.formatInteger(crypto.quote.usd.marketCap, 1, 'COMMA')}">marketCap</td>
                         <td class="text-align-table-right" th:style="${crypto.quote.usd.percentChange24h} > 0 ? 'color: #0ea600' : 'color: red'"
                             th:text="${crypto.quote.usd.percentChange24h} > 0 ? '+' + ${#numbers.formatDecimal(crypto.quote.usd.percentChange24h, 1, 2)} + '%' : ${#numbers.formatDecimal(crypto.quote.usd.percentChange24h, 1, 2)} + '%'">percentChange24h</td>
                         <td class="text-align-table-right" th:style="${crypto.quote.usd.percentChange7d} > 0 ? 'color: #0ea600' : 'color: red'"

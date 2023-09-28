@@ -17,6 +17,7 @@ import site.bitrun.cryptocurrency.dto.HoldCryptoDto;
 import site.bitrun.cryptocurrency.global.api.upbit.domain.UpbitMarket;
 import site.bitrun.cryptocurrency.global.api.upbit.service.UpbitService;
 import site.bitrun.cryptocurrency.service.HoldCryptoService;
+import site.bitrun.cryptocurrency.service.MemberService;
 import site.bitrun.cryptocurrency.session.SessionConst;
 
 import java.util.ArrayList;
@@ -27,21 +28,30 @@ public class TradeController {
 
     private final UpbitService upbitService;
     private final HoldCryptoService holdCryptoService;
+    private final MemberService memberService;
 
     @Autowired
-    public TradeController(UpbitService upbitService, HoldCryptoService holdCryptoService) {
-
+    public TradeController(UpbitService upbitService, HoldCryptoService holdCryptoService, MemberService memberService) {
         this.upbitService = upbitService;
         this.holdCryptoService = holdCryptoService;
+        this.memberService = memberService;
     }
 
     // 거래소 view
     @GetMapping("/trade/order")
-    public String viewOrderPage(Model model) {
+    public String viewOrderPage(Model model, HttpServletRequest request) {
 
         // 오른쪽 side nav 를 위한 전체 리스트
         List<UpbitMarket> upbitMarketList = upbitService.getUpbitMarketList();
         model.addAttribute(upbitMarketList);
+
+        // 보유자산(매수가능자산 KRW)
+        HttpSession session = request.getSession(false);
+        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        Member memberInfo = memberService.getMemberInfo(loginMember.getId());
+        long memberAsset = memberInfo.getAsset();
+        model.addAttribute("memberAsset", memberAsset);
 
         // upbit websocket 요청 json 부분 - 암호화폐 list json 요청에 넣어줄 것임
         List<String> marketListString = new ArrayList<>();
@@ -84,6 +94,18 @@ public class TradeController {
 
         List<HoldCryptoDto> holdCryptoList = holdCryptoService.getHoldCryptoList(loginMember.getId());
         model.addAttribute("holdCryptoList", holdCryptoList);
+
+        // 보유자산(매수가능자산 KRW)
+        Member memberInfo = memberService.getMemberInfo(loginMember.getId());
+        long memberAsset = memberInfo.getAsset();
+        model.addAttribute("memberAsset", memberAsset);
+
+        // 총매수금액 (KRW)
+        long totalBuyKrw = 0;
+        for (HoldCryptoDto holdCryptoDto : holdCryptoList) {
+            totalBuyKrw += holdCryptoDto.getBuyTotalKrw();
+        }
+        model.addAttribute("totalBuyKrw", totalBuyKrw);
 
         // 보유한 암호화폐 upbit websocket 요청 json 부분 - 암호화폐 list json 요청
         List<String> marketListString = new ArrayList<>();

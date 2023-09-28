@@ -37,7 +37,7 @@
                                             </div>
                                         </div>
                                         <dl style="display: flex" th:if="${session.loginMember != null}">
-                                            <dt>매수 가능 금액</dt><dd style="margin-left: auto" th:text="|${#numbers.formatInteger(session.loginMember.asset, 3, 'COMMA')}(KRW)|">-</dd>
+                                            <dt>매수 가능 금액</dt><dd style="margin-left: auto" th:text="|${#numbers.formatInteger(memberAsset, 1, 'COMMA')}(KRW)|">-</dd>
                                         </dl>
                                         <dl style="display: flex" th:if="${session.loginMember == null}">
                                             <dt>매수 가능 금액</dt><dd style="margin-left: auto">로그인이 필요합니다.</dd>

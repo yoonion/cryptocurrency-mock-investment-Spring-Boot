@@ -22,16 +22,16 @@
                 <div class="row" style="align-items: center; height: 300px">
                     <div class="col-sm-6">
                         <div class="d-flex border-bottom">
-                            <dl class="d-flex me-5 hold_amount_title_cell"><dt>보유 KRW</dt><dd class="hold_amount_count_cell"><span>853,352</span><span>KRW</span></dd></dl>
-                            <dl class="d-flex hold_amount_title_cell"><dt>총 보유자산</dt><dd class="hold_amount_count_cell">4,593,324 KRW</dd></dl>
+                            <dl class="d-flex me-5 hold_amount_title_cell"><dt>보유 KRW</dt><dd class="hold_amount_count_cell"><span id="member_asset" th:text="${#numbers.formatInteger(memberAsset,1,'COMMA')}">-</span><span>KRW</span></dd></dl>
+                            <dl class="d-flex hold_amount_title_cell"><dt>총 보유자산</dt><dd class="hold_amount_count_cell"><span id="total_member_asset">-</span><span>KRW</span></dd></dl>
                         </div>
                         <div class="d-flex">
-                            <dl class="d-flex me-5 hold_amount_title_cell mt-4"><dt>총매수금액</dt><dd class="hold_amount_count_cell">90,000 KRW</dd></dl>
-                            <dl class="d-flex hold_amount_title_cell mt-4"><dt>총평가손익</dt><dd class="hold_amount_count_cell text-up fw-bold">+5,000 KRW</dd></dl>
+                            <dl class="d-flex me-5 hold_amount_title_cell mt-4"><dt>총매수금액</dt><dd class="hold_amount_count_cell"><span id="total_buy_krw" th:text="${#numbers.formatInteger(totalBuyKrw,1,'COMMA')}">-</span><span>KRW</span></dd></dl>
+                            <dl class="d-flex hold_amount_title_cell mt-4"><dt>총평가손익</dt><dd class="hold_amount_count_cell text-up fw-bold"><span id="total_krw_of_return">-</span><span>KRW</span></dd></dl>
                         </div>
                         <div class="d-flex">
-                            <dl class="d-flex me-5 hold_amount_title_cell"><dt>총평가금액</dt><dd class="hold_amount_count_cell">5,000,000 KRW</dd></dl>
-                            <dl class="d-flex hold_amount_title_cell"><dt>총평가수익률</dt><dd class="hold_amount_count_cell text-up fw-bold">+7.85%</dd></dl>
+                            <dl class="d-flex me-5 hold_amount_title_cell"><dt>총평가금액</dt><dd class="hold_amount_count_cell"><span id="total_evaluation_krw">-</span><span>KRW</span></dd></dl>
+                            <dl class="d-flex hold_amount_title_cell"><dt>총평가수익률</dt><dd class="hold_amount_count_cell text-up fw-bold"><span id="total_evaluation_rate_of_return">-</span><span>%</span></dd></dl>
                         </div>
                     </div>
                     <div class="col-sm-6" style="text-align: center">
@@ -102,6 +102,8 @@
         };
 
         // 데이터를 수신 받았을 때
+        let object_total_evaluation_krw = {}; // 총 평가금액
+        let member_asset = document.getElementById('member_asset').innerText.replaceAll(',', ''); // 보유 KRW
         socket.onmessage = async function (e) {
             try {
                 if (e !== null && e !== undefined) {
@@ -127,7 +129,60 @@
                         let evaluation_krw = now_trade_price * hold_count;
                         evaluation_krw = Math.round(evaluation_krw); // 평가금액 (KRW)
 
-                        // 평가금액 html text 변경
+                        // 총평가금액
+                        object_total_evaluation_krw[crypto_code] = evaluation_krw;
+
+                        let total_evaluation_krw = 0; // 총평가금액
+                        for (const key in object_total_evaluation_krw) {
+                            total_evaluation_krw += object_total_evaluation_krw[key];
+                        }
+                        document.getElementById('total_evaluation_krw').innerText = new Intl.NumberFormat('ko-kr').format(total_evaluation_krw);
+
+                        // 총보유자산 (보유KRW + 총평가금액)
+                        let total_member_asset = 0;
+                        total_member_asset = parseInt(member_asset) + total_evaluation_krw;
+                        total_member_asset = new Intl.NumberFormat('ko-kr').format(total_member_asset);
+                        document.getElementById('total_member_asset').innerText = total_member_asset;
+
+                        // 총평가손익 (총평가금액(KRW) - 총매수금액(KRW))
+                        let total_buy_krw = document.getElementById('total_buy_krw').innerText; // 총매수금액
+                        total_buy_krw = parseInt(total_buy_krw.replaceAll(',', ''));
+
+                        let total_krw_of_return = total_evaluation_krw - total_buy_krw; // 총평가손익
+
+                        let total_krw_of_return_dom = document.getElementById('total_krw_of_return');
+                        if (total_krw_of_return > 0) {
+                            total_krw_of_return_dom.classList.remove('text-down');
+                            total_krw_of_return_dom.classList.add('text-up');
+                            total_krw_of_return_dom.innerText = '+' + new Intl.NumberFormat('ko-kr').format(total_krw_of_return);
+                        } else if (total_krw_of_return === 0) {
+                            total_krw_of_return_dom.classList.remove('text-down');
+                            total_krw_of_return_dom.classList.remove('text-up');
+                            total_krw_of_return_dom.innerText = '0';
+                        } else if (total_krw_of_return < 0) {
+                            total_krw_of_return_dom.classList.add('text-down');
+                            total_krw_of_return_dom.classList.remove('text-up');
+                            total_krw_of_return_dom.innerText = new Intl.NumberFormat('ko-kr').format(total_krw_of_return);
+                        }
+
+                        // 총평가수익률 (총평가금액 / 총매수금액) * 100 - 100
+                        let total_evaluation_rate_of_return = (total_evaluation_krw / total_buy_krw) * 100 - 100; // 총평가수익률
+                        let total_evaluation_rate_of_return_dom = document.getElementById('total_evaluation_rate_of_return');
+                        if (total_evaluation_rate_of_return > 0) {
+                            total_krw_of_return_dom.classList.remove('text-down');
+                            total_krw_of_return_dom.classList.add('text-up');
+                            total_evaluation_rate_of_return_dom.innerText = '+' + total_evaluation_rate_of_return.toFixed(2);
+                        } else if (total_evaluation_rate_of_return === 0) {
+                            total_krw_of_return_dom.classList.remove('text-down');
+                            total_krw_of_return_dom.classList.remove('text-up');
+                            total_evaluation_rate_of_return_dom.innerText = '0';
+                        } else if (total_evaluation_rate_of_return < 0) {
+                            total_krw_of_return_dom.classList.add('text-down');
+                            total_krw_of_return_dom.classList.remove('text-up');
+                            total_evaluation_rate_of_return_dom.innerText = total_evaluation_rate_of_return.toFixed(2);
+                        }
+
+                        // 암호화폐별 평가금액 html text 변경
                         document.getElementById(crypto_code + '-evaluation-krw').innerText = new Intl.NumberFormat('ko-kr').format(evaluation_krw);
 
                         // 수익률 계산 - 수익률(%) = (평가금액 / 매수금액) * 100 - 100

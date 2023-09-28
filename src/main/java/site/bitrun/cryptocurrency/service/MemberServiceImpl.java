@@ -66,4 +66,10 @@ public class MemberServiceImpl implements MemberService {
         return true;
     }
 
+    // 회원 정보 가져오기
+    @Override
+    public Member getMemberInfo(long memberId) {
+        return memberRepository.findById(memberId);
+    }
+
 }
