@@ -48,10 +48,11 @@ public class TradeController {
         // 보유자산(매수가능자산 KRW)
         HttpSession session = request.getSession(false);
         Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
-
-        Member memberInfo = memberService.getMemberInfo(loginMember.getId());
-        long memberAsset = memberInfo.getAsset();
-        model.addAttribute("memberAsset", memberAsset);
+        if (loginMember != null) {
+            Member memberInfo = memberService.getMemberInfo(loginMember.getId());
+            long memberAsset = memberInfo.getAsset();
+            model.addAttribute("memberAsset", memberAsset);
+        }
 
         // upbit websocket 요청 json 부분 - 암호화폐 list json 요청에 넣어줄 것임
         List<String> marketListString = new ArrayList<>();
@@ -63,7 +64,7 @@ public class TradeController {
         return "trade/order";
     }
 
-    // 매수
+    // 매수 & 매도
     @PostMapping("/trade/order")
     public String cryptoBuy(@Validated @ModelAttribute BuyCryptoForm buyCryptoForm, BindingResult bindingResult, HttpServletRequest request) {
 
@@ -72,6 +73,7 @@ public class TradeController {
         }
 
         String tradeType = buyCryptoForm.getTradeType(); // buy(매수) OR sell(매도)
+        System.out.println("tradeType = " + tradeType);
 
         HttpSession session = request.getSession(false);
         Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
@@ -79,7 +81,7 @@ public class TradeController {
         if (tradeType.equals("buy")) { // 매수
             holdCryptoService.buyCrypto(loginMember.getId(), buyCryptoForm.getBuyMarketCode(), buyCryptoForm.getBuyKrw());
         } else if (tradeType.equals("sell")) { // 매도
-
+//            System.out.println("매도 부분 입니다");
         }
 
         return "redirect:/trade/order";
@@ -114,9 +116,6 @@ public class TradeController {
             marketArrayList.add(holdCrypto.getMarketCode());
         }
         model.addAttribute("marketArrayList", marketArrayList);
-
-        // 보유 암호화폐 Chart 데이터
-
 
         return "trade/holdCrypto";
     }

@@ -14,4 +14,5 @@ public interface HoldCryptoRepository extends JpaRepository<HoldCrypto, Long> {
 
     @Query("select h from HoldCrypto h where h.member.id = :memberId")
     List<HoldCrypto> findByMemberId(@Param("memberId") Long memberId);
+
 }

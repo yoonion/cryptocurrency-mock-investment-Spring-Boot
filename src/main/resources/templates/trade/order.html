@@ -37,10 +37,10 @@
                                             </div>
                                         </div>
                                         <dl style="display: flex" th:if="${session.loginMember != null}">
-                                            <dt>매수 가능 금액</dt><dd style="margin-left: auto" th:text="|${#numbers.formatInteger(memberAsset, 1, 'COMMA')}(KRW)|">-</dd>
+                                            <dt>매수 가능</dt><dd style="margin-left: auto" th:text="|${#numbers.formatInteger(memberAsset, 1, 'COMMA')}(KRW)|">-</dd>
                                         </dl>
                                         <dl style="display: flex" th:if="${session.loginMember == null}">
-                                            <dt>매수 가능 금액</dt><dd style="margin-left: auto">로그인이 필요합니다.</dd>
+                                            <dt>매수 가능</dt><dd style="margin-left: auto">로그인이 필요합니다.</dd>
                                         </dl>
                                         <!--<div class="form-outline mb-3">
                                             <input type="text" id="form3" class="form-control" />
@@ -63,8 +63,8 @@
 
                         <div class="col-sm-6">
                             <form th:action method="post">
-                                <input type="hidden" name="tradeType" value="buy">
-                                <input type="hidden" id="sell_market_code" name="sell_market_code" value="KRW-BTC">
+                                <input type="hidden" name="tradeType" value="sell">
+                                <input type="hidden" id="sellMarketCode" name="sellMarketCode" value="KRW-BTC">
                                 <div class="card">
                                     <div class="card-body">
                                         <h5 class="card-title"><span id="sell_symbol_name">BTC</span> 매도</h5><hr>
@@ -80,10 +80,10 @@
                                             </div>
                                         </div>
                                         <dl style="display: flex" th:if="${session.loginMember != null}">
-                                            <dt>매도 가능 금액</dt><dd style="margin-left: auto">구현중</dd>
+                                            <dt>매도 가능</dt><dd id="holdCryptoCount" style="margin-left: auto">0</dd>
                                         </dl>
                                         <dl style="display: flex" th:if="${session.loginMember == null}">
-                                            <dt>매도 가능 금액</dt><dd style="margin-left: auto">로그인이 필요합니다.</dd>
+                                            <dt>매도 가능</dt><dd style="margin-left: auto">로그인이 필요합니다.</dd>
                                         </dl>
                                         <!--<div class="form-outline">
                                             <input type="text" id="form1" class="form-control mb-3" />

@@ -51,11 +51,16 @@
                 let resultJson = xhr.response;
 
                 if (xhr.status === 200) { // 성공
-                    console.log(resultJson);
+                    let marketCodeSplit = resultJson.marketCode.split('-');
+                    let cryptoSymbol = marketCodeSplit[1];
+
+                    // console.log(resultJson);
                     document.getElementById('crypto_korean_name').innerText = resultJson.koreanName; // 상단 한글명
                     document.getElementById('crypto_symbol_name').innerText = resultJson.marketCode; // 상단 마켓코드
-                    document.getElementById('buy_symbol_name').innerText = `${resultJson.koreanName}(${resultJson.marketCode})`; // 하단 매수 마켓코드
-                    document.getElementById('sell_symbol_name').innerText = `${resultJson.koreanName}(${resultJson.marketCode})`; // 하단 매도 마켓코드
+                    document.getElementById('buy_symbol_name').innerText = `${resultJson.koreanName}(${cryptoSymbol})`; // 하단 매수 마켓코드
+                    document.getElementById('sell_symbol_name').innerText = `${resultJson.koreanName}(${cryptoSymbol})`; // 하단 매도 마켓코드
+                    document.getElementById('holdCryptoCount').innerText = `${resultJson.buyCryptoCount} ${cryptoSymbol}`; // 하단 매도 마켓코드
+
                     document.getElementById('buyMarketCode').value = marketCode; // 넘겨줄 매수 암호화폐 market code
                     document.getElementById('sellMarketCode').value = marketCode; // 넘겨줄 매도 암호화폐 market code
                 } else { // 실패
