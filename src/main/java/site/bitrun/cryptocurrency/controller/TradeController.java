@@ -92,6 +92,7 @@ public class TradeController {
         HttpSession session = request.getSession(false);
         Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
+        // 보유 암호화폐 list
         List<HoldCryptoDto> holdCryptoList = holdCryptoService.getHoldCryptoList(loginMember.getId());
         model.addAttribute("holdCryptoList", holdCryptoList);
 
@@ -108,11 +109,14 @@ public class TradeController {
         model.addAttribute("totalBuyKrw", totalBuyKrw);
 
         // 보유한 암호화폐 upbit websocket 요청 json 부분 - 암호화폐 list json 요청
-        List<String> marketListString = new ArrayList<>();
+        List<String> marketArrayList = new ArrayList<>();
         for (HoldCryptoDto holdCrypto : holdCryptoList) {
-            marketListString.add(holdCrypto.getMarketCode());
+            marketArrayList.add(holdCrypto.getMarketCode());
         }
-        model.addAttribute("marketListString", marketListString);
+        model.addAttribute("marketArrayList", marketArrayList);
+
+        // 보유 암호화폐 Chart 데이터
+
 
         return "trade/holdCrypto";
     }

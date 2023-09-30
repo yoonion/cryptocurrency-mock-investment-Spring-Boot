@@ -19,24 +19,22 @@
         <div class="container">
             <div class="mt-4">
                 <h2 style="text-align: center">보유자산</h2>
-                <div class="row" style="align-items: center; height: 300px">
+                <div class="row" style="align-items: center;">
                     <div class="col-sm-6">
                         <div class="d-flex border-bottom">
-                            <dl class="d-flex me-5 hold_amount_title_cell"><dt>보유 KRW</dt><dd class="hold_amount_count_cell"><span id="member_asset" th:text="${#numbers.formatInteger(memberAsset,1,'COMMA')}">-</span><span>KRW</span></dd></dl>
-                            <dl class="d-flex hold_amount_title_cell"><dt>총 보유자산</dt><dd class="hold_amount_count_cell"><span id="total_member_asset">-</span><span>KRW</span></dd></dl>
+                            <dl class="d-flex me-5 hold_amount_title_cell" ><dt style="margin-top: 14px">보유 KRW</dt><dd class="hold_amount_count_cell"><span id="member_asset" th:text="${#numbers.formatInteger(memberAsset,1,'COMMA')}" style="font-size: 25px">-</span><span class="text-muted ms-1">KRW</span></dd></dl>
+                            <dl class="d-flex hold_amount_title_cell"><dt style="margin-top: 14px">총 보유자산</dt><dd class="hold_amount_count_cell"><span id="total_member_asset" style="font-size: 25px">-</span><span class="text-muted ms-1">KRW</span></dd></dl>
                         </div>
                         <div class="d-flex">
-                            <dl class="d-flex me-5 hold_amount_title_cell mt-4"><dt>총매수금액</dt><dd class="hold_amount_count_cell"><span id="total_buy_krw" th:text="${#numbers.formatInteger(totalBuyKrw,1,'COMMA')}">-</span><span>KRW</span></dd></dl>
-                            <dl class="d-flex hold_amount_title_cell mt-4"><dt>총평가손익</dt><dd class="hold_amount_count_cell text-up fw-bold"><span id="total_krw_of_return">-</span><span>KRW</span></dd></dl>
+                            <dl class="d-flex me-5 hold_amount_title_cell mt-4"><dt>총매수금액</dt><dd class="hold_amount_count_cell"><span id="total_buy_krw" th:text="${#numbers.formatInteger(totalBuyKrw,1,'COMMA')}">-</span><span class="text-muted ms-1">KRW</span></dd></dl>
+                            <dl class="d-flex hold_amount_title_cell mt-4"><dt>총평가손익</dt><dd class="hold_amount_count_cell"><span id="total_krw_of_return" class="fw-bold">-</span><span class="text-muted ms-1">KRW</span></dd></dl>
                         </div>
                         <div class="d-flex">
-                            <dl class="d-flex me-5 hold_amount_title_cell"><dt>총평가금액</dt><dd class="hold_amount_count_cell"><span id="total_evaluation_krw">-</span><span>KRW</span></dd></dl>
-                            <dl class="d-flex hold_amount_title_cell"><dt>총평가수익률</dt><dd class="hold_amount_count_cell text-up fw-bold"><span id="total_evaluation_rate_of_return">-</span><span>%</span></dd></dl>
+                            <dl class="d-flex me-5 hold_amount_title_cell"><dt>총평가금액</dt><dd class="hold_amount_count_cell"><span id="total_evaluation_krw">-</span><span class="text-muted ms-1">KRW</span></dd></dl>
+                            <dl class="d-flex hold_amount_title_cell"><dt>총평가수익률</dt><dd class="hold_amount_count_cell fw-bold"><span id="total_evaluation_rate_of_return" class="fw-bold">-</span><span class="text-muted ms-1">%</span></dd></dl>
                         </div>
                     </div>
-                    <div class="col-sm-6" style="text-align: center">
-                        <canvas id="hold_amount_chart" style="display: inline; height: 200px"></canvas>
-                    </div>
+                    <div id="hold_asset_chart" class="col-sm-6"></div>
                 </div>
             </div>
 
@@ -70,7 +68,7 @@
                         <td class="text-align-table-right" style="background-color: #F5F5F5"><span class="fw-bold" th:id="|${holdCrypto.marketCode}-evaluation-krw|">21,943,430</span><span class="text-muted ms-1">KRW</span></td><!-- 평가금액 -->
                         <td class="text-align-table-right">
                             <p class="mb-1"><span class="fw-bold" th:id="|${holdCrypto.marketCode}-krw-of-return|">-</span><span class="text-muted ms-1">KRW</span></p>  <!-- 평가 손익 -->
-                            <p class="mb-0"><span class="fw-bold" th:id="|${holdCrypto.marketCode}-rate-of-return|">-</span><span class="text-muted">%</span></p>  <!-- 수익률 -->
+                            <p class="mb-0"><span class="fw-bold" th:id="|${holdCrypto.marketCode}-rate-of-return|">-</span><span class="text-muted ms-1">%</span></p>  <!-- 수익률 -->
                         </td>
                     </tr>
                     </tbody>
@@ -79,7 +77,8 @@
 
         </div>
     <script th:inline="javascript">
-        const marketCodeListForWebsocket = [[${marketListString}]];
+        const marketArrayList = [[${marketArrayList}]];
+        const holdCryptoList = [[${holdCryptoList}]];
 
         // 웹소켓 생성
         const upbitWebsocketUrl = "wss://api.upbit.com/websocket/v1";
@@ -94,7 +93,7 @@
                 },
                 {
                     "type": "ticker", // 현재가
-                    "codes": marketCodeListForWebsocket // ["KRW-BTC", "KRW-NEO" ... ] - order.html 에서 전역으로 넘어온 값
+                    "codes": marketArrayList // ["KRW-BTC", "KRW-NEO" ... ]
                 },
             ];
 
@@ -169,16 +168,16 @@
                         let total_evaluation_rate_of_return = (total_evaluation_krw / total_buy_krw) * 100 - 100; // 총평가수익률
                         let total_evaluation_rate_of_return_dom = document.getElementById('total_evaluation_rate_of_return');
                         if (total_evaluation_rate_of_return > 0) {
-                            total_krw_of_return_dom.classList.remove('text-down');
-                            total_krw_of_return_dom.classList.add('text-up');
+                            total_evaluation_rate_of_return_dom.classList.remove('text-down');
+                            total_evaluation_rate_of_return_dom.classList.add('text-up');
                             total_evaluation_rate_of_return_dom.innerText = '+' + total_evaluation_rate_of_return.toFixed(2);
                         } else if (total_evaluation_rate_of_return === 0) {
-                            total_krw_of_return_dom.classList.remove('text-down');
-                            total_krw_of_return_dom.classList.remove('text-up');
+                            total_evaluation_rate_of_return_dom.classList.remove('text-down');
+                            total_evaluation_rate_of_return_dom.classList.remove('text-up');
                             total_evaluation_rate_of_return_dom.innerText = '0';
                         } else if (total_evaluation_rate_of_return < 0) {
-                            total_krw_of_return_dom.classList.add('text-down');
-                            total_krw_of_return_dom.classList.remove('text-up');
+                            total_evaluation_rate_of_return_dom.classList.add('text-down');
+                            total_evaluation_rate_of_return_dom.classList.remove('text-up');
                             total_evaluation_rate_of_return_dom.innerText = total_evaluation_rate_of_return.toFixed(2);
                         }
 
@@ -247,48 +246,120 @@
             console.log(e);
         };
 
-        /**
-         * Chart.js - 보유자산 포트폴리오 차트
-         * hold_amount_chart
-         */
-        const data = {
-            labels: [
-                'test1',
-                'test2',
-                'test2',
-                'test2',
-                'test2',
-                'test2',
-                'test3'
-            ],
-            datasets: [{
-                label: 'My First Dataset',
-                data: [300, 50, 100, 50, 60, 70, 80, 90],
-                backgroundColor: [
-                    'rgb(255, 99, 132)',
-                    'rgb(54, 162, 235)',
-                    'rgb(255, 205, 86)'
-                ],
-                hoverOffset: 4
-            }]
-        };
+        // ==========================================
+        // Highcharts 보유자산 포트폴리오 차트 불러오기
+        // ==========================================
+        // Chart Data - Upbit api
+        let marketListToString = String(marketArrayList);
+        let upbitTradePriceApiUrl = 'https://api.upbit.com/v1/ticker?markets=' + marketListToString;
 
-        new Chart(
-            document.getElementById('hold_amount_chart'), {
-                type: 'doughnut',
-                data: data,
-                options: {
-                    // borderWidth: 180,
-                    responsive: false,
-                    plugins: {
-                        legend: {
-                            // display: false,
-                            position: 'left',
+        fetch(upbitTradePriceApiUrl)
+            .then((res) => {
+                return res.json();
+            })
+            .then((jsonData) => {
+                // 업비트 api -> 현재가 불러오기
+                let objUpbitTradePrice = {};
+                for (let i = 0; i < jsonData.length; i++) {
+                    let marketCode = jsonData[i].market; // market code
+                    let marketCodeSplit = marketCode.split("-");
+                    let cryptoSymbol = marketCodeSplit[1]; // ex) BTC, ETH ...
+
+                    let tradePrice = jsonData[i].trade_price; // upbit 기준 현재가
+
+                    objUpbitTradePrice[cryptoSymbol] = tradePrice;
+                }
+
+                // 보유중인 암호화폐 정보에서, 구매한 개수 가져오기
+                let objHoldCryptoCount = {};
+                for (let i = 0; i < holdCryptoList.length; i++) {
+                    let marketCode = holdCryptoList[i].marketCode;
+                    let marketCodeSplit = marketCode.split("-");
+                    let cryptoSymbol = marketCodeSplit[1]; // ex) BTC, ETH ...
+
+                    let holdCount = holdCryptoList[i].holdCount;
+
+                    objHoldCryptoCount[cryptoSymbol] = holdCount;
+                }
+
+                console.log('objUpbitTradePrice', objUpbitTradePrice);
+                console.log('objHoldCryptoCount', objHoldCryptoCount);
+
+                let totalHoldAsset = 0; // 총 보유자산 (보유KRW + 총평가금액)
+                let evaluationPrices = {};
+                for (let key in objUpbitTradePrice) {
+                    let evaluationPrice = objUpbitTradePrice[key] * objHoldCryptoCount[key];
+                    totalHoldAsset += evaluationPrice;
+
+                    evaluationPrices[key] = Math.round(evaluationPrice);
+                }
+                totalHoldAsset = Math.round(totalHoldAsset) + member_asset; // 총 보유자산 (보유KRW + 총평가금액)
+
+                // 보유 비중 계산 -- 최종적으로 차트에 넣어줄 데이터 가공
+                let chartPercentData = [];
+                for (let key in evaluationPrices) {
+                    let holdPercent = (evaluationPrices[key] / totalHoldAsset) * 100; // 보유 비중(%)
+
+                    chartPercentData.push({name: key, y: holdPercent})
+                }
+
+                // 보유 비중에 KRW 비중 추가
+                let krwHoldPercent = (member_asset / totalHoldAsset) * 100; // 보유 비중(%)
+                chartPercentData.push({name: 'KRW', y: krwHoldPercent});
+
+                return chartPercentData;
+            })
+            .then(chartData => {
+                // Data retrieved from https://netmarketshare.com/
+                // Make monochrome colors
+                const colors = Highcharts.getOptions().colors.map((c, i) =>
+                    // Start out with a darkened base color (negative brighten), and end
+                    // up with a much brighter color
+                    Highcharts.color(Highcharts.getOptions().colors[0])
+                        .brighten((i - 3) / 7)
+                        .get()
+                );
+
+                // Build the chart
+                Highcharts.chart('hold_asset_chart', {
+                    chart: {
+                        plotBackgroundColor: null,
+                        plotBorderWidth: null,
+                        plotShadow: false,
+                        type: 'pie'
+                    },
+                    title: {
+                        text: '보유 비중(%)',
+                        align: 'center'
+                    },
+                    tooltip: {
+                        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                    },
+                    plotOptions: {
+                        pie: {
+                            // allowPointSelect: false, // 클릭 효과
+                            cursor: 'pointer',
+                            colors,
+                            borderRadius: 5,
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b><br>{point.percentage:.1f} %',
+                                distance: -50,
+                                filter: {
+                                    property: 'percentage',
+                                    operator: '>',
+                                    value: 4
+                                }
+                            }
                         }
-                    }
-                },
-            }
-        );
+                    },
+                    series: [{
+                        name: '비중',
+                        data: chartData
+                    }]
+                });
+            });
+
     </script>
     </body>
 </html>
