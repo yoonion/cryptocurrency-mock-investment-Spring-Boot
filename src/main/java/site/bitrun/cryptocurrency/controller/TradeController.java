@@ -79,7 +79,8 @@ public class TradeController {
         Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
         if (tradeType.equals("buy")) { // 매수
-            holdCryptoService.buyCrypto(loginMember.getId(), buyCryptoForm.getBuyMarketCode(), buyCryptoForm.getBuyKrw());
+            long buyKrw = Long.parseLong(buyCryptoForm.getBuyKrw().replaceAll(",", "")); // 금액에 ',' 제거
+            holdCryptoService.buyCrypto(loginMember.getId(), buyCryptoForm.getBuyMarketCode(), buyKrw);
         } else if (tradeType.equals("sell")) { // 매도
 //            System.out.println("매도 부분 입니다");
         }

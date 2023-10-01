@@ -11,9 +11,9 @@ public class BuyCryptoForm {
 
     private String buyType; // 지정가 OR 시장가
 
-    private long buyKrw;
+    private String buyKrw;
 
-    public BuyCryptoForm(String tradeType, String buyMarketCode, String buyType, long buyKrw) {
+    public BuyCryptoForm(String tradeType, String buyMarketCode, String buyType, String buyKrw) {
         this.tradeType = tradeType;
         this.buyMarketCode = buyMarketCode;
         this.buyType = buyType;
@@ -44,11 +44,11 @@ public class BuyCryptoForm {
         this.buyType = buyType;
     }
 
-    public long getBuyKrw() {
+    public String getBuyKrw() {
         return buyKrw;
     }
 
-    public void setBuyKrw(long buyKrw) {
+    public void setBuyKrw(String buyKrw) {
         this.buyKrw = buyKrw;
     }
 }

@@ -37,7 +37,7 @@
                                             </div>
                                         </div>
                                         <dl style="display: flex" th:if="${session.loginMember != null}">
-                                            <dt>매수 가능</dt><dd style="margin-left: auto" th:text="|${#numbers.formatInteger(memberAsset, 1, 'COMMA')}(KRW)|">-</dd>
+                                            <dt>매수 가능</dt><dd style="margin-left: auto"><span id="holdAsset" th:text="|${#numbers.formatInteger(memberAsset, 1, 'COMMA')}|"></span><span class="text-muted ms-1">KRW</span></dd>
                                         </dl>
                                         <dl style="display: flex" th:if="${session.loginMember == null}">
                                             <dt>매수 가능</dt><dd style="margin-left: auto">로그인이 필요합니다.</dd>
@@ -49,6 +49,12 @@
                                         <div class="form-outline mb-3">
                                             <input type="text" id="buyKrw" name="buyKrw" class="form-control" />
                                             <label class="form-label" for="buyKrw">주문총액(KRW)</label>
+                                        </div>
+                                        <div class="btn-group shadow-0 mb-3 w-100" role="group" id="buyQuantityBtnGroup">
+                                            <button type="button" class="btn btn-outline-success" data-mdb-ripple-color="dark">10%</button>
+                                            <button type="button" class="btn btn-outline-success" data-mdb-ripple-color="dark">25%</button>
+                                            <button type="button" class="btn btn-outline-success" data-mdb-ripple-color="dark">50%</button>
+                                            <button type="button" class="btn btn-outline-success" data-mdb-ripple-color="dark">100%</button>
                                         </div>
                                         <div class="d-grid" th:if="${session.loginMember != null}">
                                             <button class="btn btn-success" type="submit">매수</button>
@@ -70,28 +76,34 @@
                                         <h5 class="card-title"><span id="sell_symbol_name">BTC</span> 매도</h5><hr>
                                         <div class="mb-3">
                                             <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option1" disabled />
+                                                <input class="form-check-input" type="radio" name="sellType" id="inlineRadio3" value="reservationMarketPrice" disabled />
                                                 <label class="form-check-label" for="inlineRadio3">지정가</label>
                                             </div>
 
                                             <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio4" value="option2" />
+                                                <input class="form-check-input" type="radio" name="sellType" id="inlineRadio4" value="nowMarketPrice" checked/>
                                                 <label class="form-check-label" for="inlineRadio4">시장가</label>
                                             </div>
                                         </div>
-                                        <dl style="display: flex" th:if="${session.loginMember != null}">
-                                            <dt>매도 가능</dt><dd id="holdCryptoCount" style="margin-left: auto">0</dd>
+                                        <dl style="display: flex">
+                                            <dt>매도 가능</dt><dd style="margin-left: auto"><span id="holdCryptoCount">-</span><span id="holdCryptoSymbol" class="text-muted ms-1">-</span></dd>
                                         </dl>
-                                        <dl style="display: flex" th:if="${session.loginMember == null}">
-                                            <dt>매도 가능</dt><dd style="margin-left: auto">로그인이 필요합니다.</dd>
-                                        </dl>
+                                        <!--<dl style="display: flex" th:if="${session.loginMember == null}">
+                                            <dt>매도 가능</dt><dd style="margin-left: auto"><span id="holdCryptoCount"></span><span id="holdCryptoSymbol"></span></dd>
+                                        </dl>-->
                                         <!--<div class="form-outline">
                                             <input type="text" id="form1" class="form-control mb-3" />
                                             <label class="form-label" for="form1">매도가격(KRW)</label>
                                         </div>-->
                                         <div class="form-outline mb-3">
-                                            <input type="text" id="sell_price" name="sell_price" class="form-control" />
-                                            <label class="form-label" for="sell_price">주문총액(KRW)</label>
+                                            <input type="text" id="sellCount" name="sellCount" class="form-control" />
+                                            <label class="form-label" for="sellCount">주문수량<span id="sellCryptoSymbol"></span></label>
+                                        </div>
+                                        <div class="btn-group shadow-0 mb-3 w-100" role="group" id="sellQuantityBtnGroup">
+                                            <button type="button" class="btn btn-outline-danger" data-mdb-ripple-color="dark">10%</button>
+                                            <button type="button" class="btn btn-outline-danger" data-mdb-ripple-color="dark">25%</button>
+                                            <button type="button" class="btn btn-outline-danger" data-mdb-ripple-color="dark">50%</button>
+                                            <button type="button" class="btn btn-outline-danger" data-mdb-ripple-color="dark">100%</button>
                                         </div>
                                         <div class="d-grid" th:if="${session.loginMember != null}">
                                             <button class="btn btn-danger" type="submit">매도</button>
@@ -150,7 +162,7 @@
                     <!-- Tabs navs -->
 
                     <!-- Tabs content -->
-                    <div class="tab-content border" id="ex2-content"  style="width: 420px; height: 810px; overflow: auto">
+                    <div class="tab-content border" id="ex2-content"  style="width: 420px; height: 860px; overflow: auto">
                         <div class="tab-pane fade show active" id="ex3-tabs-1" role="tabpanel" aria-labelledby="ex3-tab-1">
                             <table class="table table-hover">
                                 <thead>

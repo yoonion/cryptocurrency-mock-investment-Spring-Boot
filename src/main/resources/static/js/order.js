@@ -101,3 +101,52 @@ socket.onerror = function (e) {
     console.log("업비트 웹소켓 연결 실패");
     console.log(e);
 };
+
+/**
+ * 10%, 25%, 50%, 100% - 매수 금액 설정 버튼
+ */
+const buyKrwElement = document.getElementById('buyKrw'); // 주문총액 input text
+let holdAsset = document.getElementById('holdAsset').innerText;
+holdAsset = parseInt(holdAsset.replaceAll(',', '')) ; // 매수 가능한 보유 자산
+const buyQuantityBtnGroup = document.querySelectorAll('#buyQuantityBtnGroup > button');
+buyQuantityBtnGroup.forEach(button => {
+    button.addEventListener('click', () => {
+
+        let buyPercent = button.textContent; // 클릭한 버튼의 텍스트 값 (비율%)
+        buyPercent = parseInt(buyPercent.replace('%', '')) / 100;
+        console.log(buyPercent);
+
+        // 주문할 최종 금액
+        let buyPrice = holdAsset * buyPercent;
+        buyPrice = Math.floor(buyPrice);
+
+        buyKrwElement.classList.add('active'); // MDBootstrap input box 활성화 시키는 class
+        buyKrwElement.value = new Intl.NumberFormat('ko-kr').format(buyPrice);
+    });
+});
+
+/**
+ * 10%, 25%, 50%, 100% - 매도 수량 설정 버튼
+ */
+const sellQuantityElement = document.getElementById('sellCount'); // 주문수량 input text
+const sellQuantityBtnGroup = document.querySelectorAll('#sellQuantityBtnGroup > button');
+sellQuantityBtnGroup.forEach(button => {
+    button.addEventListener('click', () => {
+
+        let holdCryptoCount = document.getElementById('holdCryptoCount').innerText;
+        holdCryptoCount = parseFloat(holdCryptoCount) ; // 매도 가능한(보유중인) 암호화폐 개수
+        console.log(holdCryptoCount);
+
+        let sellPercent = button.textContent; // 클릭한 버튼의 텍스트 값 (비율%)
+        sellPercent = parseInt(sellPercent.replace('%', '')) / 100;
+        console.log(sellPercent);
+
+        // 주문할 최종 수량
+        let sellCount = holdCryptoCount * sellPercent;
+        sellCount = Math.round(sellCount * 100000000) / 100000000; // 소수점 8째 자리 수 까지만
+
+        sellQuantityElement.classList.add('active'); // MDBootstrap input box 활성화 시키는 class
+        // sellQuantityElement.value = new Intl.NumberFormat('ko-kr').format(sellCount);
+        sellQuantityElement.value = sellCount;
+    });
+});
