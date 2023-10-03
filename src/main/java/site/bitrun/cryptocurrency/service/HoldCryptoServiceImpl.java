@@ -156,12 +156,17 @@ public class HoldCryptoServiceImpl implements HoldCryptoService {
             throw new RuntimeException(e);
         }
 
-        // 매도할 평가금액 - 보유 KRW 에 더해준다.
+        // 매도할 평가금액 - 보유 KRW 에 더해 업데이트
         double nowTradePrice = Double.parseDouble(tradePrice[0].getTradePrice()); // 암호화폐 현재가
         long sellEvaluationKrw = Math.round(nowTradePrice * sellCryptoCount); // 매도 평가금액
 
         long updateMemberAsset = findMember.getAsset() + sellEvaluationKrw; // 보유 KRW 에 더해준 값
         findMember.setAsset(updateMemberAsset);
+
+        // 해당 암호화폐를 모두 매도 했을 경우(보유 개수 = 0), delete 처리 해준다.
+        if (updateBuyCryptoCount == 0) {
+            holdCryptoRepository.deleteById(findHoldCrypto.getId());
+        }
 
     }
 
