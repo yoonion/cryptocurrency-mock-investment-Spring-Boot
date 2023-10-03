@@ -14,6 +14,7 @@ import site.bitrun.cryptocurrency.domain.HoldCrypto;
 import site.bitrun.cryptocurrency.domain.Member;
 import site.bitrun.cryptocurrency.dto.BuyCryptoForm;
 import site.bitrun.cryptocurrency.dto.HoldCryptoDto;
+import site.bitrun.cryptocurrency.dto.SellCryptoForm;
 import site.bitrun.cryptocurrency.global.api.upbit.domain.UpbitMarket;
 import site.bitrun.cryptocurrency.global.api.upbit.service.UpbitService;
 import site.bitrun.cryptocurrency.service.HoldCryptoService;
@@ -64,26 +65,35 @@ public class TradeController {
         return "trade/order";
     }
 
-    // 매수 & 매도
-    @PostMapping("/trade/order")
-    public String cryptoBuy(@Validated @ModelAttribute BuyCryptoForm buyCryptoForm, BindingResult bindingResult, HttpServletRequest request) {
+    // 매수
+    @PostMapping("/trade/order/buy")
+    public String requestCryptoBuy(@Validated @ModelAttribute BuyCryptoForm buyCryptoForm, BindingResult bindingResult, HttpServletRequest request) {
 
         if (bindingResult.hasErrors()) {
             return "trade/order";
         }
 
-        String tradeType = buyCryptoForm.getTradeType(); // buy(매수) OR sell(매도)
-        System.out.println("tradeType = " + tradeType);
+        HttpSession session = request.getSession(false);
+        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        long buyKrw = Long.parseLong(buyCryptoForm.getBuyKrw().replaceAll(",", "")); // 금액에 ',' 제거
+        holdCryptoService.buyCrypto(loginMember.getId(), buyCryptoForm.getBuyMarketCode(), buyKrw);
+
+        return "redirect:/trade/order";
+    }
+
+    // 매도
+    @PostMapping("/trade/order/sell")
+    public String requestCryptoSell(@Validated @ModelAttribute SellCryptoForm sellCryptoForm, BindingResult bindingResult, HttpServletRequest request) {
+
+        if (bindingResult.hasErrors()) {
+            return "trade/order";
+        }
 
         HttpSession session = request.getSession(false);
         Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
-        if (tradeType.equals("buy")) { // 매수
-            long buyKrw = Long.parseLong(buyCryptoForm.getBuyKrw().replaceAll(",", "")); // 금액에 ',' 제거
-            holdCryptoService.buyCrypto(loginMember.getId(), buyCryptoForm.getBuyMarketCode(), buyKrw);
-        } else if (tradeType.equals("sell")) { // 매도
-//            System.out.println("매도 부분 입니다");
-        }
+        holdCryptoService.sellCrypto(loginMember.getId(), sellCryptoForm.getSellMarketCode(), sellCryptoForm.getSellCount());
 
         return "redirect:/trade/order";
     }

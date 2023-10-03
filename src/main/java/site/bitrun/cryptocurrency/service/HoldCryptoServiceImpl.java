@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 public class HoldCryptoServiceImpl implements HoldCryptoService {
 
     private final UpbitRepository upbitRepository;
@@ -36,6 +37,7 @@ public class HoldCryptoServiceImpl implements HoldCryptoService {
         this.memberRepository = memberRepository;
     }
 
+    // 매수
     @Override
     @Transactional
     public void buyCrypto(long memberId, String marketCode, long buyKrw) {
@@ -68,7 +70,7 @@ public class HoldCryptoServiceImpl implements HoldCryptoService {
         String buyCryptoCountStr = String.format("%.8f", buyKrw / nowTradePrice); // 소수점 8째 자리 수 까지만
         double buyCryptoCount = Double.parseDouble(buyCryptoCountStr);
 
-        // 해당 암호화폐를 보유 중 인지 select 해본다
+        // 해당 암호화폐를 보유 중 인지 select 한다
         HoldCrypto findHoldCrypto = holdCryptoRepository.findByMemberIdAndUpbitMarketId(findMember.getId(), findCrypto.getId());
 
         // 해당 암호화폐를 처음 매수하는 경우, 해당 암호화폐 정보를 insert 시킨다.
@@ -102,6 +104,68 @@ public class HoldCryptoServiceImpl implements HoldCryptoService {
         findMember.setAsset(afterAsset);
     }
 
+    // 매도
+    @Override
+    @Transactional
+    public void sellCrypto(long memberId, String marketCode, double sellCryptoCount) {
+
+        Member findMember = memberRepository.findById(memberId);
+        UpbitMarket findCrypto = upbitRepository.findByMarket(marketCode);
+
+        // 해당 암호화폐를 보유 중 인지 select 한다
+        HoldCrypto findHoldCrypto = holdCryptoRepository.findByMemberIdAndUpbitMarketId(findMember.getId(), findCrypto.getId());
+
+        double buyCryptoCount = findHoldCrypto.getBuyCryptoCount();
+        long buyTotalKrw = findHoldCrypto.getBuyTotalKrw();
+
+        // 만약 2 BTC 보유중 .. 매수가격(KRW) 500원
+        // 0.1 BTC를 팔겠습니다.
+        // 0.1 BTC의 가격을 구하는 공식 > 총매수가격(KRW) / (보유중인 개수 / 매도개수)
+        double sellCryptoCountToKrwDouble = buyTotalKrw / (buyCryptoCount / sellCryptoCount); // 매도할 암호화폐의 KRW 가격(평가금액 아님. 매수금액에서 빼줄 가격)
+        long sellCryptoCountToKrw = Math.round(sellCryptoCountToKrwDouble);
+
+        // 매수가격(KRW) 업데이트
+        long updateBuyKrw = buyTotalKrw - sellCryptoCountToKrw;
+        findHoldCrypto.setBuyTotalKrw(updateBuyKrw);
+
+        // 보유중인 암호화폐 개수 빼서 업데이트
+        double updateBuyCryptoCount = buyCryptoCount - sellCryptoCount; // 업데이트할 보유 암호화폐 개수
+        updateBuyCryptoCount = Math.round(updateBuyCryptoCount * 100000000) / 100000000.0; // 소수점 8째 자리까지만
+
+        findHoldCrypto.setBuyCryptoCount(updateBuyCryptoCount);
+
+
+        // 평가금액 구하기 - 매도 하게되면 해당하는 평가금액을 보유 KRW 에 더해주어야 한다.
+        /**
+         * 업비트 API > 암호화폐 현재가 가져오기 - trade_price
+         * 비트코인 - https://api.upbit.com/v1/ticker?markets=KRW-BTC
+         */
+        String requestUrl = "https://api.upbit.com/v1/ticker?markets=" + marketCode;
+
+        RestTemplate restTemplate = new RestTemplate();
+        String response = restTemplate.getForObject(requestUrl, String.class);
+
+        ObjectMapper objectMapper = new ObjectMapper(); // Jackson lib
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // 필드로 선언한 데이터만 파싱
+
+        // 현재 암호화폐의 가격 매핑해서 가져온다
+        UpbitTradePriceDto[] tradePrice = new UpbitTradePriceDto[0];
+        try {
+            tradePrice = objectMapper.readValue(response, UpbitTradePriceDto[].class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        // 매도할 평가금액 - 보유 KRW 에 더해준다.
+        double nowTradePrice = Double.parseDouble(tradePrice[0].getTradePrice()); // 암호화폐 현재가
+        long sellEvaluationKrw = Math.round(nowTradePrice * sellCryptoCount); // 매도 평가금액
+
+        long updateMemberAsset = findMember.getAsset() + sellEvaluationKrw; // 보유 KRW 에 더해준 값
+        findMember.setAsset(updateMemberAsset);
+
+    }
+
+    // 보유자산 불러오기
     @Override
     public List<HoldCryptoDto> getHoldCryptoList(long memberId) {
 

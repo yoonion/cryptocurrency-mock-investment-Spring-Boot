@@ -19,8 +19,7 @@
                     <div class="row" style="width: 924px">
 
                         <div class="col-sm-6">
-                            <form th:action method="post">
-                                <input type="hidden" name="tradeType" value="buy">
+                            <form th:action="@{/trade/order/buy}" method="post">
                                 <input type="hidden" id="buyMarketCode" name="buyMarketCode" value="KRW-BTC">
                                 <div class="card">
                                     <div class="card-body">
@@ -68,8 +67,7 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <form th:action method="post">
-                                <input type="hidden" name="tradeType" value="sell">
+                            <form th:action="@{/trade/order/sell}" method="post">
                                 <input type="hidden" id="sellMarketCode" name="sellMarketCode" value="KRW-BTC">
                                 <div class="card">
                                     <div class="card-body">

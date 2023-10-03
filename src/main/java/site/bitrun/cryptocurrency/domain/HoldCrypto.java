@@ -81,4 +81,5 @@ public class HoldCrypto {
     public void setBuyTotalKrw(long buyTotalKrw) {
         this.buyTotalKrw = buyTotalKrw;
     }
+
 }
