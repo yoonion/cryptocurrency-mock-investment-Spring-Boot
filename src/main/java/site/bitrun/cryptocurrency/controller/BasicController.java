@@ -34,13 +34,6 @@ public class BasicController {
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////// API DB SAVE /////////////////////////////////
-    /////////////// 코인마켓캡 api 호출해 DB 저장 - 임시 .. //////////////////
-    @GetMapping("/crypto/rank/api/save")
-    public String cryptoRankApi() {
-        cryptoService.saveCryptoRankList();
-        return "redirect:/";
-    }
-
     ///////////////// 업비트 api 호출 - 거래가능 마켓 목록 DB 저장 - 임시 .. ///////////////
     @GetMapping("/upbit/api/save")
     public String upbitMarketApi() {

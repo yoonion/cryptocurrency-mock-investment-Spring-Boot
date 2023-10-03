@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface CryptoService {
 
-    void saveCryptoRankList();
+    void saveCryptoRankList(); // 시가총액 top100 저장
 
     List<CryptoRank> getCryptoRankList();
 }

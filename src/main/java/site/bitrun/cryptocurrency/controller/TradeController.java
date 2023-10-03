@@ -22,7 +22,9 @@ import site.bitrun.cryptocurrency.service.MemberService;
 import site.bitrun.cryptocurrency.session.SessionConst;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class TradeController {
@@ -38,9 +40,9 @@ public class TradeController {
         this.memberService = memberService;
     }
 
-    // 거래소 view
-    @GetMapping("/trade/order")
-    public String viewOrderPage(Model model, HttpServletRequest request) {
+    // 공통 model 정보
+    @ModelAttribute
+    public void tradeInfo(Model model, HttpServletRequest request) {
 
         // 오른쪽 side nav 를 위한 전체 리스트
         List<UpbitMarket> upbitMarketList = upbitService.getUpbitMarketList();
@@ -55,12 +57,17 @@ public class TradeController {
             model.addAttribute("memberAsset", memberAsset);
         }
 
-        // upbit websocket 요청 json 부분 - 암호화폐 list json 요청에 넣어줄 것임
+        // upbit websocket 요청 json 부분 - 전체 암호화폐 list json 요청에 넣어줄 것임
         List<String> marketListString = new ArrayList<>();
         for (UpbitMarket upbitMarket : upbitMarketList) {
             marketListString.add(upbitMarket.getMarket());
         }
         model.addAttribute("marketListString", marketListString);
+    }
+
+    // 거래소 view
+    @GetMapping("/trade/order")
+    public String viewOrderPage(Model model, HttpServletRequest request) {
 
         return "trade/order";
     }
@@ -79,7 +86,7 @@ public class TradeController {
         long buyKrw = Long.parseLong(buyCryptoForm.getBuyKrw().replaceAll(",", "")); // 금액에 ',' 제거
         holdCryptoService.buyCrypto(loginMember.getId(), buyCryptoForm.getBuyMarketCode(), buyKrw);
 
-        return "redirect:/trade/order";
+        return "redirect:/trade/hold/crypto";
     }
 
     // 매도
@@ -95,7 +102,7 @@ public class TradeController {
 
         holdCryptoService.sellCrypto(loginMember.getId(), sellCryptoForm.getSellMarketCode(), sellCryptoForm.getSellCount());
 
-        return "redirect:/trade/order";
+        return "redirect:/trade/hold/crypto";
     }
 
     // 보유자산 view
@@ -109,11 +116,6 @@ public class TradeController {
         List<HoldCryptoDto> holdCryptoList = holdCryptoService.getHoldCryptoList(loginMember.getId());
         model.addAttribute("holdCryptoList", holdCryptoList);
 
-        // 보유자산(매수가능자산 KRW)
-        Member memberInfo = memberService.getMemberInfo(loginMember.getId());
-        long memberAsset = memberInfo.getAsset();
-        model.addAttribute("memberAsset", memberAsset);
-
         // 총매수금액 (KRW)
         long totalBuyKrw = 0;
         for (HoldCryptoDto holdCryptoDto : holdCryptoList) {
@@ -121,7 +123,7 @@ public class TradeController {
         }
         model.addAttribute("totalBuyKrw", totalBuyKrw);
 
-        // 보유한 암호화폐 upbit websocket 요청 json 부분 - 암호화폐 list json 요청
+        // 보유중인 암호화폐 upbit websocket 요청 json 부분 - 암호화폐 list json 요청
         List<String> marketArrayList = new ArrayList<>();
         for (HoldCryptoDto holdCrypto : holdCryptoList) {
             marketArrayList.add(holdCrypto.getMarketCode());

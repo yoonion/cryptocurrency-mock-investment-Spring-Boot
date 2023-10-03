@@ -64,8 +64,10 @@ public class CryptoServiceImpl implements CryptoService {
         }
 
         /**
-         * 가공한 데이터 LIST DB INSERT
+         * 가공한 데이터 LIST DB INSERT (turncate 해준다)
          */
+        cryptoRepository.truncateCryptoRankTable(); // 시가총액 top100 테이블 초기화
+
         List<CryptoRank> cryptoRanks = new ArrayList<>(); // rank data 담을 LIST
 
         for (CryptoRankDto cryptoRankDto : cryptoRankDtos) {
