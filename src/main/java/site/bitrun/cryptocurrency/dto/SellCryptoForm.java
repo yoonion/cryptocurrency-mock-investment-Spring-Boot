@@ -8,9 +8,10 @@ public class SellCryptoForm {
 
     private String sellType; // 지정가 OR 시장가
 
-    private double sellCount; // 매도 수량
+    @NotEmpty
+    private String sellCount; // 매도 수량
 
-    public SellCryptoForm(String sellMarketCode, String sellType, double sellCount) {
+    public SellCryptoForm(String sellMarketCode, String sellType, String sellCount) {
         this.sellMarketCode = sellMarketCode;
         this.sellType = sellType;
         this.sellCount = sellCount;
@@ -24,7 +25,7 @@ public class SellCryptoForm {
         return sellType;
     }
 
-    public double getSellCount() {
+    public String getSellCount() {
         return sellCount;
     }
 }

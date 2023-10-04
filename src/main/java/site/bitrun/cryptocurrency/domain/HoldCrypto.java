@@ -7,7 +7,7 @@ import site.bitrun.cryptocurrency.global.api.upbit.domain.UpbitMarket;
 public class HoldCrypto {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "hold_crypto_id")
     private Long id;
 

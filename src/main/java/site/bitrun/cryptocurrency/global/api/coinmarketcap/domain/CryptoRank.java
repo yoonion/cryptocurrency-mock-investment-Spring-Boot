@@ -5,7 +5,8 @@ import jakarta.persistence.*;
 @Entity
 public class CryptoRank {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "crypto_rank_id")
     private Long id;
 

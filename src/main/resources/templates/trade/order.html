@@ -19,7 +19,7 @@
                     <div class="row" style="width: 924px">
 
                         <div class="col-sm-6">
-                            <form th:action="@{/trade/order/buy}" method="post">
+                            <form th:action="@{/trade/order/buy}" th:object="${buyCryptoForm}" method="post">
                                 <input type="hidden" id="buyMarketCode" name="buyMarketCode" value="KRW-BTC">
                                 <div class="card">
                                     <div class="card-body">
@@ -45,9 +45,11 @@
                                             <input type="text" id="form3" class="form-control" />
                                             <label class="form-label" for="form3">매수가격(KRW)</label>
                                         </div>-->
-                                        <div class="form-outline mb-3">
-                                            <input type="text" id="buyKrw" name="buyKrw" class="form-control" />
+                                        <div class="form-outline mb-4">
+                                            <input type="text" id="buyKrw" th:field="*{buyKrw}" class="form-control" />
+<!--                                            <input type="text" id="buyKrw" name="buyKrw" class="form-control" />-->
                                             <label class="form-label" for="buyKrw">주문총액(KRW)</label>
+                                            <div class="form-helper text-danger" th:if="${#fields.hasErrors('buyKrw')}" th:errors="*{buyKrw}">숫자만 입력 오류</div>
                                         </div>
                                         <div class="btn-group shadow-0 mb-3 w-100" role="group" id="buyQuantityBtnGroup">
                                             <button type="button" class="btn btn-outline-success" data-mdb-ripple-color="dark">10%</button>
@@ -67,7 +69,7 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <form th:action="@{/trade/order/sell}" method="post">
+                            <form th:action="@{/trade/order/sell}" th:object="${sellCryptoForm}" method="post">
                                 <input type="hidden" id="sellMarketCode" name="sellMarketCode" value="KRW-BTC">
                                 <div class="card">
                                     <div class="card-body">
@@ -93,9 +95,10 @@
                                             <input type="text" id="form1" class="form-control mb-3" />
                                             <label class="form-label" for="form1">매도가격(KRW)</label>
                                         </div>-->
-                                        <div class="form-outline mb-3">
-                                            <input type="text" id="sellCount" name="sellCount" class="form-control" />
+                                        <div class="form-outline mb-4">
+                                            <input type="text" id="sellCount" th:field="*{sellCount}" class="form-control" />
                                             <label class="form-label" for="sellCount">주문수량<span id="sellCryptoSymbol"></span></label>
+                                            <div class="form-helper text-danger mb-3" th:if="${#fields.hasErrors('sellCount')}" th:errors="*{sellCount}">숫자만 입력 오류</div>
                                         </div>
                                         <div class="btn-group shadow-0 mb-3 w-100" role="group" id="sellQuantityBtnGroup">
                                             <button type="button" class="btn btn-outline-danger" data-mdb-ripple-color="dark">10%</button>

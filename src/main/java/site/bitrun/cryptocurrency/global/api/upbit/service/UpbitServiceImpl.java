@@ -53,7 +53,7 @@ public class UpbitServiceImpl implements UpbitService {
         for (UpbitMarketDto upbitMarketDto : upbitMarketDtos) {
 
             UpbitMarket upbitMarket = new UpbitMarket();
-            upbitMarket.setMarket(upbitMarketDto.getMarketCode());
+            upbitMarket.setMarket(upbitMarketDto.getMarket());
             upbitMarket.setKoreanName(upbitMarketDto.getKoreanName());
             upbitMarket.setEnglishName(upbitMarketDto.getEnglishName());
 

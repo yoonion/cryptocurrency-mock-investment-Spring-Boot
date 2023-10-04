@@ -6,19 +6,19 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class UpbitMarketDto {
 
-    private String marketCode;
+    private String market;
     private String koreanName;
     private String englishName;
 
     public UpbitMarketDto() {
     }
 
-    public String getMarketCode() {
-        return marketCode;
+    public String getMarket() {
+        return market;
     }
 
-    public void setMarketCode(String marketCode) {
-        this.marketCode = marketCode;
+    public void setMarket(String market) {
+        this.market = market;
     }
 
     public String getKoreanName() {
