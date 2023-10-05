@@ -155,9 +155,16 @@ public class TradeController {
             return "trade/order";
         }
 
-        // 매도 개수가 보유 개수보다 많은 경우 체크
+        // 보유하고 있지 않은 암호화폐 매도 체크
         UpbitMarket findUpbitMarketOne = upbitService.getUpbitMarketOne(sellCryptoForm.getSellMarketCode());
         HoldCrypto findHoldCrypto = holdCryptoRepository.findByMemberIdAndUpbitMarketId(loginMember.getId(), findUpbitMarketOne.getId());
+        if (findHoldCrypto == null) {
+            log.info("보유하고 있지 않은 암호화폐 Exception");
+            bindingResult.rejectValue("sellCount", "negativeHold", "암호화폐를 보유중이지 않습니다.");
+            return "trade/order";
+        }
+
+        // 매도 개수가 보유 개수보다 많은 경우 체크
         if (findHoldCrypto.getBuyCryptoCount() < sellCount) {
             log.info("매도 개수 초과 Exception");
             bindingResult.rejectValue("sellCount", "negativeNumber", "매도 가능 개수보다 클 수 없습니다.");
