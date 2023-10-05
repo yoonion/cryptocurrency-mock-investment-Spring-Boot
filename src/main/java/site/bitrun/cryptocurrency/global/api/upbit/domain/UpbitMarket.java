@@ -17,6 +17,15 @@ public class UpbitMarket {
 
     private String englishName;
 
+    public UpbitMarket() {
+    }
+
+    public UpbitMarket(String market, String koreanName, String englishName) {
+        this.market = market;
+        this.koreanName = koreanName;
+        this.englishName = englishName;
+    }
+
     public Long getId() {
         return id;
     }

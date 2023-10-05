@@ -59,8 +59,6 @@ class CryptoServiceImplTest {
 
         CryptoRankDtoTest cryptoRankDtos = objectMapper.readValue(jsonData, CryptoRankDtoTest.class);
 
-        System.out.println(cryptoRankDtos.toString());
-
     }
     /**
      * TEST CLASS

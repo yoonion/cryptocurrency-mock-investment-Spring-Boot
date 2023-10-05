@@ -35,7 +35,6 @@ public class ApiController {
         // 로그인 유저 체크 - 로그인시 매도 가능 금액 넘겨주기 위함
         HttpSession session = request.getSession(false);
         Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        System.out.println("loginMember = " + loginMember);
 
         // 쿼리 파라미터로 해당하는 암호화폐의 정보를 1개 가져온다.
         UpbitMarket findUpbitCryptoOne = upbitService.getUpbitMarketOne(code);

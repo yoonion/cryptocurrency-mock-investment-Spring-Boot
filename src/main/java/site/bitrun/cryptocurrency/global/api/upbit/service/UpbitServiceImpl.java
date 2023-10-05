@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import site.bitrun.cryptocurrency.global.api.coinmarketcap.domain.CryptoRank;
 import site.bitrun.cryptocurrency.global.api.upbit.domain.UpbitMarket;
 import site.bitrun.cryptocurrency.global.api.upbit.dto.UpbitMarketDto;
 import site.bitrun.cryptocurrency.global.api.upbit.repository.UpbitRepository;
@@ -33,7 +32,6 @@ public class UpbitServiceImpl implements UpbitService {
 
         RestTemplate restTemplate = new RestTemplate();
         String responseData = restTemplate.getForObject(upbitRequestUrl, String.class);
-        // System.out.println("responseData = " + responseData);
 
         // Jackson lib
         ObjectMapper objectMapper = new ObjectMapper();
@@ -46,17 +44,22 @@ public class UpbitServiceImpl implements UpbitService {
             throw new RuntimeException(e);
         }
 
-        /**
-         * LIST 에 담아 SAVE ALL
-         */
+        //  LIST 에 담아 SAVE ALL >> 이미 저장되어 있는 암호화폐는, 저장하지 않는다.
         List<UpbitMarket> upbitMarkets = new ArrayList<>();
         for (UpbitMarketDto upbitMarketDto : upbitMarketDtos) {
 
-            UpbitMarket upbitMarket = new UpbitMarket();
-            upbitMarket.setMarket(upbitMarketDto.getMarket());
-            upbitMarket.setKoreanName(upbitMarketDto.getKoreanName());
-            upbitMarket.setEnglishName(upbitMarketDto.getEnglishName());
+            String newMarketCode = upbitMarketDto.getMarket(); // api 조회한 곳
 
+            if (!newMarketCode.contains("KRW")) continue; // KRW 마켓인 것 만 저장한다.
+
+             UpbitMarket findUpbitMarketOne = getUpbitMarketOne(newMarketCode);
+             if (findUpbitMarketOne != null) continue; // 이미 저장되어있으면 continue
+
+            UpbitMarket upbitMarket = new UpbitMarket(
+                    upbitMarketDto.getMarket(),
+                    upbitMarketDto.getKoreanName(),
+                    upbitMarketDto.getEnglishName()
+            );
             upbitMarkets.add(upbitMarket);
         }
 
