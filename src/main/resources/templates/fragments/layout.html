@@ -12,7 +12,7 @@
 <header th:replace="~{fragments/header::headerFragment}"></header>
 
 <!-- 공통적이지 않은 부분이 들어가는 부분 -->
-<body layout:fragment="content"></body>
+<body class="d-flex flex-column min-vh-100" layout:fragment="content"></body>
 
 <!-- footer.html -->
 <footer th:replace="~{fragments/footer::footerFragment}"></footer>
