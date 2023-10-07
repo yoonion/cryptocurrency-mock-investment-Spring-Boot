@@ -55,13 +55,14 @@ public class TradeController {
 
         // 보유자산(매수가능자산 KRW)
         HttpSession session = request.getSession(false);
-        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        if (loginMember != null) {
-            Member memberInfo = memberService.getMemberInfo(loginMember.getId());
-            long memberAsset = memberInfo.getAsset();
-            model.addAttribute("memberAsset", memberAsset);
+        if (session != null) {
+            Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+            if (loginMember != null) {
+                Member memberInfo = memberService.getMemberInfo(loginMember.getId());
+                long memberAsset = memberInfo.getAsset();
+                model.addAttribute("memberAsset", memberAsset);
+            }
         }
-
         // upbit websocket 요청 json 부분 - 전체 암호화폐 list json 요청에 넣어줄 것임
         List<String> marketListString = new ArrayList<>();
         for (UpbitMarket upbitMarket : upbitMarketList) {

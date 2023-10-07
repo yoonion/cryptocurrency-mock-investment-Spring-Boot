@@ -49,12 +49,12 @@
             xhr.onload = () => {
 
                 let resultJson = xhr.response;
+                console.log("resultJson ==> ", resultJson);
 
                 if (xhr.status === 200) { // 성공
                     let marketCodeSplit = resultJson.marketCode.split('-');
                     let cryptoSymbol = marketCodeSplit[1];
 
-                    console.log(resultJson);
                     document.getElementById('crypto_korean_name').innerText = resultJson.koreanName; // 상단 한글명
                     document.getElementById('crypto_symbol_name').innerText = resultJson.marketCode; // 상단 마켓코드
                     document.getElementById('buy_symbol_name').innerText = `${resultJson.koreanName}(${cryptoSymbol})`; // 하단 매수 마켓코드

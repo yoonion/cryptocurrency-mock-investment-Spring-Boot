@@ -32,21 +32,25 @@ public class ApiController {
     @GetMapping("/api/crypto/{code}")
     public UpbitMarketApiDto getCryptoInfo(@PathVariable("code") String code, HttpServletRequest request) {
 
-        // 로그인 유저 체크 - 로그인시 매도 가능 금액 넘겨주기 위함
-        HttpSession session = request.getSession(false);
-        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
-
         // 쿼리 파라미터로 해당하는 암호화폐의 정보를 1개 가져온다.
         UpbitMarket findUpbitCryptoOne = upbitService.getUpbitMarketOne(code);
         double buyCryptoCount = 0;
-        if (loginMember != null) {
-            Long findCryptoId = findUpbitCryptoOne.getId(); // 암호화폐 고유 id
-            HoldCrypto findHoldCryptoOne = holdCryptoRepository.findByMemberIdAndUpbitMarketId(loginMember.getId(), findCryptoId);
 
-            // 매수한 암호화폐 정보가 있으면 넣어준다
-            if (findHoldCryptoOne != null) {
-                buyCryptoCount = findHoldCryptoOne.getBuyCryptoCount();
+        // 로그인 유저 체크 - 로그인시 매도 가능 금액 넘겨주기 위함
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+            if (loginMember != null) {
+                Long findCryptoId = findUpbitCryptoOne.getId(); // 암호화폐 고유 id
+                HoldCrypto findHoldCryptoOne = holdCryptoRepository.findByMemberIdAndUpbitMarketId(loginMember.getId(), findCryptoId);
+
+                // 매수한 암호화폐 정보가 있으면 넣어준다
+                if (findHoldCryptoOne != null) {
+                    buyCryptoCount = findHoldCryptoOne.getBuyCryptoCount();
+                }
             }
+
         }
 
         UpbitMarketApiDto result = new UpbitMarketApiDto(findUpbitCryptoOne.getMarket(), findUpbitCryptoOne.getKoreanName(), findUpbitCryptoOne.getEnglishName(), buyCryptoCount);

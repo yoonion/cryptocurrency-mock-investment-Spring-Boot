@@ -106,11 +106,13 @@ socket.onerror = function (e) {
  * 10%, 25%, 50%, 100% - 매수 금액 설정 버튼
  */
 const buyKrwElement = document.getElementById('buyKrw'); // 주문총액 input text
-let holdAsset = document.getElementById('holdAsset').innerText;
-holdAsset = parseInt(holdAsset.replaceAll(',', '')) ; // 매수 가능한 보유 자산
 const buyQuantityBtnGroup = document.querySelectorAll('#buyQuantityBtnGroup > button');
 buyQuantityBtnGroup.forEach(button => {
     button.addEventListener('click', () => {
+
+        // 매수 가능한 보유 자산
+        let holdAsset = document.getElementById('holdAsset').innerText;
+        holdAsset = parseInt(holdAsset.replaceAll(',', '')) ;
 
         let buyPercent = button.textContent; // 클릭한 버튼의 텍스트 값 (비율%)
         buyPercent = parseInt(buyPercent.replace('%', '')) / 100;
