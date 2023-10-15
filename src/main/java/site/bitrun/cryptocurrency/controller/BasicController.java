@@ -2,6 +2,7 @@ package site.bitrun.cryptocurrency.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,12 +25,14 @@ public class BasicController {
     private final MemberService memberService;
     private final CryptoService cryptoService;
     private final UpbitService upbitService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public BasicController(MemberService memberService, CryptoService cryptoService, UpbitService upbitService) {
+    public BasicController(MemberService memberService, CryptoService cryptoService, UpbitService upbitService, PasswordEncoder passwordEncoder) {
         this.memberService = memberService;
         this.cryptoService = cryptoService;
         this.upbitService = upbitService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // 메인 페이지
@@ -69,7 +72,8 @@ public class BasicController {
         }
 
         // 새로운 회원 가입
-        Member newMember = new Member(memberRegisterForm.getUsername(), memberRegisterForm.getEmail(), memberRegisterForm.getPassword(), 10000000);
+        String encodePassword = passwordEncoder.encode(memberRegisterForm.getPassword()); // 비밀번호 암호화
+        Member newMember = new Member(memberRegisterForm.getUsername(), memberRegisterForm.getEmail(), encodePassword, 10000000);
         memberService.memberRegister(newMember);
 
         // 성공했다면 로그인까지 처리한다.

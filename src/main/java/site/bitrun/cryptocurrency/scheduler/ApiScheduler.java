@@ -30,18 +30,18 @@ public class ApiScheduler {
         cryptoService.saveCryptoRankList();
     }
 
-    /*// 업비트 API - 거래가능 market 목록 DB save (오후 6시 1일 1회 업데이트)
+    // 업비트 API - 거래가능 market 목록 DB save (오후 6시 1일 1회 업데이트)
     @Scheduled(cron = "0 0 18 * * *", zone = "Asia/Seoul")
     public void saveUpbitMarketDatabase() {
         log.info("saveUpbitMarketDatabase() -> 업비트 거래가능 목록 DB 저장 스케쥴러 실행");
         upbitService.saveUpbitMarket();
-    }*/
+    }
 
     // 업비트 API - 거래가능 market 목록 DB save (이전 작업 종료 후 밀리세컨드 만큼 후 시작 - 1시간)
-    @Scheduled(fixedDelay = 3600000)
+    /*@Scheduled(fixedDelay = 3600000)
     public void saveUpbitMarketDatabase() {
         log.info("saveUpbitMarketDatabase() -> 업비트 거래가능 목록 DB 저장 스케쥴러 실행");
         upbitService.saveUpbitMarket();
-    }
+    }*/
 
 }
