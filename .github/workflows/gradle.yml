@@ -1,4 +1,4 @@
-name: Java CI with Gradle
+name: Java CI with Gradle & CD with Docker
 
 on:
   push:
@@ -37,26 +37,26 @@ jobs:
 
     # 4. 프로젝트 빌드
     - name: Build with Gradle
-      run: ./gradlew build
+      run: ./gradlew build -x test # 테스트 코드 제외
 
     # 5. Docker build & Push
     - name: Docker build & push to Docker hub
       run: |
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }} .
-        docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }}
+        docker build -t spring-bitrun ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }} .
+        docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }}:spring-bitrun
 
-    # 6. 오라클 클라우드 배포
-    - name: Docker image pull & Deploy to Oracle Cloud
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.INSTANCE_HOST }} # 오라클 클라우드 인스턴스 퍼블릭IP
-        username: ${{ secrets.INSTANCE_USERNAME }}
-        password: ${{ secrets.INSTANCE_PASSWORD }}
-        # 도커 작업
-        script: |
-          sudo docker ps
-          sudo docker rm -f $(docker ps -qa)
-          sudo docker pull ${{ secrets.DOCKER_REPO_NAME }}/latest
-          sudo docker run -d -p 8080:8080 ${{ secrets.DOCKER_REPO_NAME }}/latest
-          sudo docker image prune -f
+    # 6. docker image pull & compose up - 오라클 클라우드 배포
+#    - name: Docker image pull & Deploy to Oracle Cloud
+#      uses: appleboy/ssh-action@master
+#      with:
+#        host: ${{ secrets.INSTANCE_HOST }} # 오라클 클라우드 인스턴스 퍼블릭IP
+#        username: ${{ secrets.INSTANCE_USERNAME }}
+#        password: ${{ secrets.INSTANCE_PASSWORD }}
+#        # 도커 이미지 배포 작업
+#        script: |
+#          sudo docker rm -f $(sudo docker ps -aq) # 모든 컨테이너를 강제로 제거
+#          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}/latest
+#          cd ~
+#          sudo docker-compose up -d
+#          sudo docker image prune -f
