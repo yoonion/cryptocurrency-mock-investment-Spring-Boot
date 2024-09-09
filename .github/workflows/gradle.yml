@@ -43,8 +43,8 @@ jobs:
     - name: Docker build & push to Docker hub
       run: |
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-        docker build -t spring-bitrun ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }} .
-        docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }}:spring-bitrun
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }} .
+        docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }}
 
     # 6. docker image pull & compose up - 오라클 클라우드 배포
 #    - name: Docker image pull & Deploy to Oracle Cloud
