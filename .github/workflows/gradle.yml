@@ -49,15 +49,16 @@ jobs:
         docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }}
 
     # 6. docker image pull & deploy
-#    - name: Docker image pull & Deploy
-#      uses: appleboy/ssh-action@master
-#      with:
-#        host: ${{ secrets.INSTANCE_HOST }} # 인스턴스 퍼블릭IP
-#        username: ${{ secrets.INSTANCE_USERNAME }}
-#        password: ${{ secrets.INSTANCE_PASSWORD }}
-#        # 도커 이미지 배포 작업
-#        script: |
-#          sudo docker rm -f $(sudo docker ps -aq) # 모든 컨테이너를 강제로 제거
-#          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-#          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }}:latest
-#          sudo docker image prune -f
+    - name: Docker image pull & Deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.INSTANCE_HOST }} # 인스턴스 퍼블릭IP
+        username: ${{ secrets.INSTANCE_USERNAME }}
+        password: ${{ secrets.INSTANCE_PASSWORD }}
+        # 도커 이미지 pull & deploy 작업
+        script: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker rm -f $(docker ps -q --filter "name=spring-app")
+          docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }}:latest
+          docker run -d --name spring-app --network bitrun -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }}:latest
+          docker image prune -f
