@@ -41,19 +41,14 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build -x test # 테스트 코드 제외
 
-  # 2. Dockerize Job (의존성: Build Job이 끝난 후 실행)
-  dockerize:
-    runs-on: ubuntu-latest
-    needs: build  # build job이 완료된 후 실행
-    steps:
-    # Docker build & Push
+    # Docker image build & Push
     - name: Docker build & push to Docker hub
       run: |
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
         docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }} .
         docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }}
 
-  # 3. Deploy Job (의존성: Dockerize Job이 끝난 후 실행)
+  # 2. Deploy Job (의존성: Dockerize Job이 끝난 후 실행)
   deploy:
     runs-on: ubuntu-latest
     needs: dockerize  # dockerize job이 완료된 후 실행
