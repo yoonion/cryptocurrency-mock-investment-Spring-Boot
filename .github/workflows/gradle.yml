@@ -51,7 +51,7 @@ jobs:
   # 2. Deploy Job (의존성: Dockerize Job이 끝난 후 실행)
   deploy:
     runs-on: ubuntu-latest
-    needs: dockerize  # dockerize job이 완료된 후 실행
+    needs: build  # dockerize job이 완료된 후 실행
 
     steps:
     # docker image pull & deploy
