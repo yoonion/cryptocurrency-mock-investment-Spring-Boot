@@ -64,7 +64,7 @@ jobs:
         # 도커 이미지 pull & deploy 작업
         script: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker rm -f $(docker ps -q --filter "name=spring-app")
+          docker rm -f $(docker ps -qa --filter "name=spring-app")
           docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }}:latest
           docker run -d --name spring-app --network bitrun -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }}:latest
           docker image prune -f
