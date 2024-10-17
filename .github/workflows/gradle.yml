@@ -66,5 +66,6 @@ jobs:
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker rm -f $(docker ps -qa --filter "name=spring-app")
           docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }}:latest
-          docker run -d --name spring-app --network bitrun -p 8080:8080 -p 443:443 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }}:latest
+#          docker run -d --name spring-app --network bitrun -p 8080:8080 -p 443:443 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }}:latest
+          docker run -d --name spring-app --network host -p 8080:8080 -p 443:443 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }}:latest
           docker image prune -f
