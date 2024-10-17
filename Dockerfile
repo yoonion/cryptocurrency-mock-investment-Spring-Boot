@@ -5,7 +5,7 @@ FROM openjdk:17-jdk-slim
 # update-ca-certificates를 실행하여 최신 CA 인증서를 적용
 # 불필요한 패키지 캐시를 삭제하여 이미지 크기를 줄임
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends ca-certificates curl && \
+    apt-get install -y --no-install-recommends ca-certificates curl openssl && \
     update-ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
