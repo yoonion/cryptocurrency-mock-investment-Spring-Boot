@@ -20,14 +20,12 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    # yml 파일 생성 & SSL 인증서 복사
+    # yml 파일 생성
     - name: make application.yml
       run: |
         cd ./src/main/resources
         touch ./application.yml
         echo "${{ secrets.APPLICATION_YML }}" > ./application.yml
-        touch ./keystore.p12
-        echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > keystore.p12
       shell: bash
 
     # gradle 세팅
@@ -66,5 +64,5 @@ jobs:
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker rm -f $(docker ps -qa --filter "name=spring-app")
           docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }}:latest
-          docker run -d --name spring-app -p 8080:8080 -p 443:443 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }}:latest
+          docker run -d --name spring-app -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }}:latest
           docker image prune -f
