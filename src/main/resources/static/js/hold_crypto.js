@@ -1,6 +1,6 @@
 // 웹소켓 생성
-const upbitWebsocketUrl = "wss://api.upbit.com/websocket/v1";
-const socket = new WebSocket(upbitWebsocketUrl);
+const websocketApiUrl = "wss://ws-api.bithumb.com/websocket/v1";
+const socket = new WebSocket(websocketApiUrl);
 
 // 커넥션이 제대로 생성되었을 때
 socket.onopen = function (e) {
@@ -169,9 +169,9 @@ socket.onerror = function (e) {
 // ==========================================
 // Chart Data - Upbit api
 let marketListToString = String(marketArrayList);
-let upbitTradePriceApiUrl = 'https://api.upbit.com/v1/ticker?markets=' + marketListToString;
+let tradePriceApiUrl = 'https://api.bithumb.com/v1/ticker?markets=' + marketListToString;
 
-fetch(upbitTradePriceApiUrl)
+fetch(tradePriceApiUrl)
     .then((res) => {
         return res.json();
     })

@@ -11,8 +11,8 @@
     <div class="main-banner">
         <div>
             <div class="mb-4"><h1>암호화폐 모의투자, 무료로 시작하세요.</h1></div>
-            <p>본 거래소는 업비트(<a href="https://www.upbit.com">https://www.upbit.com</a>)의 실시간 데이터를 기반으로 운영됩니다.</p>
-            <p>상업적인 목적이 없는 개인이 운영하는 거래소입니다.</p>
+            <p>본 거래소는 빗썸(<a href="https://www.bithumb.com/">https://www.bithumb.com/</a>)의 실시간 데이터를 기반으로 운영됩니다.</p>
+            <p>상업적인 목적이 없는 개인이 운영하는 모의 거래소입니다.</p>
             <button th:onclick="|location.href='@{/trade/order}'|" class="btn btn-primary btn-lg" type="button">거래소 둘러보기</button>
             <button th:if="${session.loginMember == null}" th:onclick="|location.href='@{/member/login}'|" class="btn btn-info btn-lg" type="button">로그인</button>
         </div>
@@ -22,7 +22,7 @@
         <div class="w-75" style="margin-left: auto; margin-right: auto;">
             <div class="mb-3 d-flex">
                 <h2>시가총액 Top 100</h2>
-                <span class="mt-4" style="margin-left: auto; font-size: 13px">* 코인마켓캡 기준 시가총액 Top100 입니다. 단순 참고용으로, 업비트 거래소와 다를 수 있습니다.<br>* 최신 데이터는 매 시간 정각에 업데이트 됩니다.</span>
+                <span class="mt-4" style="margin-left: auto; font-size: 13px">* 코인마켓캡 기준 시가총액 Top100 입니다. 단순 참고용으로, 빗썸 거래소와 다를 수 있습니다.<br>* 최신 데이터는 매 시간 정각에 업데이트 됩니다.</span>
             </div>
             <table class="table table-hover">
                 <thead>
