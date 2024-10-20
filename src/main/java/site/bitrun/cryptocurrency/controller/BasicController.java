@@ -1,6 +1,7 @@
 package site.bitrun.cryptocurrency.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -20,20 +21,13 @@ import java.util.List;
 
 
 @Controller
+@RequiredArgsConstructor
 public class BasicController {
 
     private final MemberService memberService;
     private final CryptoService cryptoService;
     private final UpbitService upbitService;
     private final PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public BasicController(MemberService memberService, CryptoService cryptoService, UpbitService upbitService, PasswordEncoder passwordEncoder) {
-        this.memberService = memberService;
-        this.cryptoService = cryptoService;
-        this.upbitService = upbitService;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     // 메인 페이지
     @GetMapping("/")

@@ -1,5 +1,5 @@
 // 웹소켓 생성
-const upbitWebsocketUrl = "wss://api.upbit.com/websocket/v1";
+const upbitWebsocketUrl = "wss://ws-api.bithumb.com/websocket/v1";
 const socket = new WebSocket(upbitWebsocketUrl);
 
 // 커넥션이 제대로 생성되었을 때

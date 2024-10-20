@@ -1,9 +1,13 @@
 package site.bitrun.cryptocurrency.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import site.bitrun.cryptocurrency.global.api.upbit.domain.UpbitMarket;
 
 @Entity
+@Getter
+@Setter
 public class HoldCrypto {
 
     @Id
@@ -33,53 +37,4 @@ public class HoldCrypto {
         this.buyAverage = buyAverage;
         this.buyTotalKrw = buyTotalKrw;
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Member getMember() {
-        return member;
-    }
-
-    public void setMember(Member member) {
-        this.member = member;
-    }
-
-    public UpbitMarket getUpbitMarket() {
-        return upbitMarket;
-    }
-
-    public void setUpbitMarket(UpbitMarket upbitMarket) {
-        this.upbitMarket = upbitMarket;
-    }
-
-    public double getBuyCryptoCount() {
-        return buyCryptoCount;
-    }
-
-    public void setBuyCryptoCount(double buyCryptoCount) {
-        this.buyCryptoCount = buyCryptoCount;
-    }
-
-    public double getBuyAverage() {
-        return buyAverage;
-    }
-
-    public void setBuyAverage(double buyAverage) {
-        this.buyAverage = buyAverage;
-    }
-
-    public long getBuyTotalKrw() {
-        return buyTotalKrw;
-    }
-
-    public void setBuyTotalKrw(long buyTotalKrw) {
-        this.buyTotalKrw = buyTotalKrw;
-    }
-
 }

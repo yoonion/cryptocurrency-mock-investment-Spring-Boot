@@ -3,9 +3,7 @@ package site.bitrun.cryptocurrency.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -20,9 +18,9 @@ import site.bitrun.cryptocurrency.repository.MemberRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class HoldCryptoServiceImpl implements HoldCryptoService {
 
@@ -30,12 +28,7 @@ public class HoldCryptoServiceImpl implements HoldCryptoService {
     private final HoldCryptoRepository holdCryptoRepository;
     private final MemberRepository memberRepository;
 
-    @Autowired
-    public HoldCryptoServiceImpl(UpbitRepository upbitRepository, HoldCryptoRepository holdCryptoRepository, MemberRepository memberRepository) {
-        this.upbitRepository = upbitRepository;
-        this.holdCryptoRepository = holdCryptoRepository;
-        this.memberRepository = memberRepository;
-    }
+    private static final String COIN_TRADE_PRICE_API_URL = "https://api.bithumb.com/v1/ticker?markets="; // 빗썸 코인별 현재가 API
 
     // 매수
     @Override
@@ -46,10 +39,10 @@ public class HoldCryptoServiceImpl implements HoldCryptoService {
         UpbitMarket findCrypto = upbitRepository.findByMarket(marketCode);
 
         /**
-         * 업비트 API > 암호화폐 현재가 가져오기 - trade_price
-         * 비트코인 - https://api.upbit.com/v1/ticker?markets=KRW-BTC
+         * 빗썸 API > 암호화폐 현재가 가져오기 - trade_price
+         * 비트코인 - https://api.bithumb.com/v1/ticker?markets=KRW-BTC
          */
-        String requestUrl = "https://api.upbit.com/v1/ticker?markets=" + marketCode;
+        String requestUrl = COIN_TRADE_PRICE_API_URL + marketCode;
 
         RestTemplate restTemplate = new RestTemplate();
         String response = restTemplate.getForObject(requestUrl, String.class);
@@ -137,10 +130,10 @@ public class HoldCryptoServiceImpl implements HoldCryptoService {
 
         // 평가금액 구하기 - 매도 하게되면 해당하는 평가금액을 보유 KRW 에 더해주어야 한다.
         /**
-         * 업비트 API > 암호화폐 현재가 가져오기 - trade_price
-         * 비트코인 - https://api.upbit.com/v1/ticker?markets=KRW-BTC
+         * 빗썸 API > 암호화폐 현재가 가져오기 - trade_price
+         * 비트코인 - https://api.bithumb.com/v1/ticker?markets=KRW-BTC
          */
-        String requestUrl = "https://api.upbit.com/v1/ticker?markets=" + marketCode;
+        String requestUrl = COIN_TRADE_PRICE_API_URL + marketCode;
 
         RestTemplate restTemplate = new RestTemplate();
         String response = restTemplate.getForObject(requestUrl, String.class);
