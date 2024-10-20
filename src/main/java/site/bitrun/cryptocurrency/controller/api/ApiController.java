@@ -2,6 +2,7 @@ package site.bitrun.cryptocurrency.controller.api;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,18 +16,12 @@ import site.bitrun.cryptocurrency.service.HoldCryptoService;
 import site.bitrun.cryptocurrency.session.SessionConst;
 
 @RestController
+@RequiredArgsConstructor
 public class ApiController {
 
     private final UpbitService upbitService;
     private final HoldCryptoService holdCryptoService;
     private final HoldCryptoRepository holdCryptoRepository;
-
-    @Autowired
-    public ApiController(UpbitService upbitService, HoldCryptoService holdCryptoService, HoldCryptoRepository holdCryptoRepository) {
-        this.upbitService = upbitService;
-        this.holdCryptoService = holdCryptoService;
-        this.holdCryptoRepository = holdCryptoRepository;
-    }
 
     // 거래소 개별 암호화폐 정보 API
     @GetMapping("/api/crypto/{code}")

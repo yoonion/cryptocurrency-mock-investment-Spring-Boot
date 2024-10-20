@@ -1,5 +1,6 @@
 package site.bitrun.cryptocurrency.scheduler;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -9,6 +10,7 @@ import site.bitrun.cryptocurrency.global.api.upbit.service.UpbitService;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class ApiScheduler {
 
      // cron 표현식
@@ -16,12 +18,6 @@ public class ApiScheduler {
 
     private final CryptoService cryptoService;
     private final UpbitService upbitService;
-
-    @Autowired
-    public ApiScheduler(CryptoService cryptoService, UpbitService upbitService) {
-        this.cryptoService = cryptoService;
-        this.upbitService = upbitService;
-    }
 
     // 코인마켓캡 API - 시가총액 top 100 저장 (1시간 마다 실행)
     @Scheduled(cron = "0 0 0/1 * * *", zone = "Asia/Seoul")

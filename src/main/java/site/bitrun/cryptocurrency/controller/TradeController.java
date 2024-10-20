@@ -2,6 +2,7 @@ package site.bitrun.cryptocurrency.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,20 +31,13 @@ import java.util.Map;
 
 @Slf4j
 @Controller
+@RequiredArgsConstructor
 public class TradeController {
 
     private final UpbitService upbitService;
     private final HoldCryptoService holdCryptoService;
     private final MemberService memberService;
     private final HoldCryptoRepository holdCryptoRepository;
-
-    @Autowired
-    public TradeController(UpbitService upbitService, HoldCryptoService holdCryptoService, MemberService memberService, HoldCryptoRepository holdCryptoRepository) {
-        this.upbitService = upbitService;
-        this.holdCryptoService = holdCryptoService;
-        this.memberService = memberService;
-        this.holdCryptoRepository = holdCryptoRepository;
-    }
 
     // 공통 model 정보
     @ModelAttribute

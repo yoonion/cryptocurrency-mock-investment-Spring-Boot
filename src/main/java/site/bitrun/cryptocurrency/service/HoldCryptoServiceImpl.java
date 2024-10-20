@@ -3,9 +3,7 @@ package site.bitrun.cryptocurrency.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -20,22 +18,15 @@ import site.bitrun.cryptocurrency.repository.MemberRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class HoldCryptoServiceImpl implements HoldCryptoService {
 
     private final UpbitRepository upbitRepository;
     private final HoldCryptoRepository holdCryptoRepository;
     private final MemberRepository memberRepository;
-
-    @Autowired
-    public HoldCryptoServiceImpl(UpbitRepository upbitRepository, HoldCryptoRepository holdCryptoRepository, MemberRepository memberRepository) {
-        this.upbitRepository = upbitRepository;
-        this.holdCryptoRepository = holdCryptoRepository;
-        this.memberRepository = memberRepository;
-    }
 
     // 매수
     @Override

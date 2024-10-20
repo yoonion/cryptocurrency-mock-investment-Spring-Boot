@@ -1,6 +1,5 @@
 package site.bitrun.cryptocurrency.service;
 
-import site.bitrun.cryptocurrency.domain.HoldCrypto;
 import site.bitrun.cryptocurrency.dto.HoldCryptoDto;
 
 import java.util.List;
