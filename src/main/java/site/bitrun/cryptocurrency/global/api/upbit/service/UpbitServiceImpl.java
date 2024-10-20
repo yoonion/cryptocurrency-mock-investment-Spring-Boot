@@ -3,7 +3,6 @@ package site.bitrun.cryptocurrency.global.api.upbit.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import site.bitrun.cryptocurrency.global.api.upbit.domain.UpbitMarket;
@@ -19,19 +18,18 @@ import java.util.List;
 public class UpbitServiceImpl implements UpbitService {
 
     private final UpbitRepository upbitRepository;
+    private final ObjectMapper objectMapper;
+
+    private static final String COIN_MARKET_API_URL = "https://api.bithumb.com/v1/market/all"; // 빗썸 coin list API
 
     @Override
     public void saveUpbitMarket() {
         /**
-         * 업비트 거래 가능 목록 API 저장
+         * 빗썸 거래 가능 목록 API 저장
          */
-        String upbitRequestUrl = "https://api.upbit.com/v1/market/all";
 
         RestTemplate restTemplate = new RestTemplate();
-        String responseData = restTemplate.getForObject(upbitRequestUrl, String.class);
-
-        // Jackson lib
-        ObjectMapper objectMapper = new ObjectMapper();
+        String responseData = restTemplate.getForObject(COIN_MARKET_API_URL, String.class);
 
         List<UpbitMarketDto> upbitMarketDtos = null;
         try {
