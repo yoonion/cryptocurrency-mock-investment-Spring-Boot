@@ -54,7 +54,7 @@
                     <tr th:each="holdCrypto : ${holdCryptoList}">
                         <td>
                             <div class="d-flex align-items-center">
-                                <img th:src="@{|https://static.upbit.com/logos/${holdCrypto.marketCodeOnlySymbol}.png|}" alt="" style="width: 45px; height: 45px" />
+                                <img th:src="@{|https://content.bithumb.com/resources/img/coin/coin-${holdCrypto.symbolMd5Hash}.png|}" alt="" style="width: 45px; height: 45px" />
                                 <div class="ms-3">
                                     <p class="fw-bold mb-1" th:text="${holdCrypto.koreanName}">비트코인</p>
                                     <p class="text-muted mb-0" th:text="${holdCrypto.marketCodeOnlySymbol}">BTC</p>
