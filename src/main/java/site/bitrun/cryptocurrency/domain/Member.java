@@ -3,11 +3,9 @@ package site.bitrun.cryptocurrency.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 public class Member {
 
@@ -25,6 +23,11 @@ public class Member {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.asset = asset;
+    }
+
+    // 보유 자산 변경
+    public void updateMemberAsset(long asset) {
         this.asset = asset;
     }
 }

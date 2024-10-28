@@ -94,7 +94,7 @@ public class HoldCryptoServiceImpl implements HoldCryptoService {
         // 매수 후, 총 보유자산 업데이트 (보유자산(KRW) - 매수한 금액(KRW))
         long currentAsset = findMember.getAsset();
         long afterAsset = currentAsset - buyKrw;
-        findMember.setAsset(afterAsset);
+        findMember.updateMemberAsset(afterAsset);
     }
 
     // 매도
@@ -154,7 +154,7 @@ public class HoldCryptoServiceImpl implements HoldCryptoService {
         long sellEvaluationKrw = Math.round(nowTradePrice * sellCryptoCount); // 매도 평가금액
 
         long updateMemberAsset = findMember.getAsset() + sellEvaluationKrw; // 보유 KRW 에 더해준 값
-        findMember.setAsset(updateMemberAsset);
+        findMember.updateMemberAsset(updateMemberAsset);
 
         // 해당 암호화폐를 모두 매도 했을 경우(보유 개수 = 0), delete 처리 해준다.
         if (updateBuyCryptoCount == 0) {
