@@ -38,11 +38,12 @@ public class MemberServiceImpl implements MemberService {
             return null;
         }
 
-        if ( passwordEncoder.matches(password, findMember.get().getPassword()) ) {
+        Member member = findMember.get();
+        if ( passwordEncoder.matches(password, member.getPassword()) ) {
             HttpSession session = request.getSession();
-            session.setAttribute(SessionConst.LOGIN_MEMBER, findMember);
+            session.setAttribute(SessionConst.LOGIN_MEMBER, member);
 
-            return findMember.get();
+            return member;
         } else {
             return null;
         }
