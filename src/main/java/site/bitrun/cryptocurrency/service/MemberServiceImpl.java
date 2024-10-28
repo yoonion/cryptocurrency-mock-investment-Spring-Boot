@@ -9,6 +9,8 @@ import site.bitrun.cryptocurrency.domain.Member;
 import site.bitrun.cryptocurrency.repository.MemberRepository;
 import site.bitrun.cryptocurrency.session.SessionConst;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
@@ -25,17 +27,17 @@ public class MemberServiceImpl implements MemberService {
     // 로그인
     @Override
     public Member memberLogin(String email, String password, HttpServletRequest request) {
-        Member findMember = memberRepository.findByEmail(email);
+        Optional<Member> findMember = memberRepository.findByEmail(email);
 
-        if (findMember == null) {
+        if (findMember.isEmpty()) {
             return null;
         }
 
-        if ( passwordEncoder.matches(password, findMember.getPassword()) ) {
+        if ( passwordEncoder.matches(password, findMember.get().getPassword()) ) {
             HttpSession session = request.getSession();
             session.setAttribute(SessionConst.LOGIN_MEMBER, findMember);
 
-            return findMember;
+            return findMember.get();
         } else {
             return null;
         }
@@ -55,13 +57,7 @@ public class MemberServiceImpl implements MemberService {
     // 회원 중복체크
     @Override
     public boolean memberCheckDuplicate(String email) {
-        Member checkMember = memberRepository.findByEmail(email);
-
-        if (checkMember == null) {
-            return false;
-        }
-
-        return true;
+        return memberRepository.findByEmail(email).isPresent();
     }
 
     // 회원 정보 가져오기
