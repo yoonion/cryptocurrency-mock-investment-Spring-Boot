@@ -2,7 +2,6 @@ package site.bitrun.cryptocurrency.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -60,7 +59,7 @@ public class BasicController {
 
         // 중복 체크
         // true 일 경우 중복
-        if (memberService.memberCheckDuplicate(memberRegisterForm.getEmail())) {
+        if (memberService.isMemberDuplicate(memberRegisterForm.getEmail())) {
             bindingResult.reject("emailDuplicate", "이미 존재하는 회원입니다."); // global error
             return "member/memberRegisterForm";
         }

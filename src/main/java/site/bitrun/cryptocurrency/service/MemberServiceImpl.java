@@ -56,7 +56,7 @@ public class MemberServiceImpl implements MemberService {
 
     // 회원 중복체크
     @Override
-    public boolean memberCheckDuplicate(String email) {
+    public boolean isMemberDuplicate(String email) {
         return memberRepository.findByEmail(email).isPresent();
     }
 
