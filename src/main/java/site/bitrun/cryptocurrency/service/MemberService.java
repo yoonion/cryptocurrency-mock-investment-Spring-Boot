@@ -2,10 +2,11 @@ package site.bitrun.cryptocurrency.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import site.bitrun.cryptocurrency.domain.Member;
+import site.bitrun.cryptocurrency.dto.MemberRegisterForm;
 
 public interface MemberService {
 
-    void memberRegister(Member member);
+    void memberRegister(MemberRegisterForm form);
 
     boolean isMemberDuplicate(String email);
 

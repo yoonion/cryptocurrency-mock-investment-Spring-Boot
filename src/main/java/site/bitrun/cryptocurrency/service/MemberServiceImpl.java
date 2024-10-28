@@ -5,9 +5,11 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import site.bitrun.cryptocurrency.constants.AppConst;
 import site.bitrun.cryptocurrency.domain.Member;
+import site.bitrun.cryptocurrency.dto.MemberRegisterForm;
 import site.bitrun.cryptocurrency.repository.MemberRepository;
-import site.bitrun.cryptocurrency.session.SessionConst;
+import site.bitrun.cryptocurrency.constants.session.SessionConst;
 
 import java.util.Optional;
 
@@ -20,8 +22,11 @@ public class MemberServiceImpl implements MemberService {
 
     // 회원가입
     @Override
-    public void memberRegister(Member member) {
-        memberRepository.save(member);
+    public void memberRegister(MemberRegisterForm form) {
+        String encodePassword = passwordEncoder.encode(form.getPassword()); // 비밀번호 암호화
+        Member newMember = new Member(form.getUsername(), form.getEmail(), encodePassword, AppConst.MEMBER_STARTING_ASSET);
+
+        memberRepository.save(newMember);
     }
 
     // 로그인
