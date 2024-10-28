@@ -3,7 +3,6 @@ package site.bitrun.cryptocurrency.controller.api;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,7 +12,7 @@ import site.bitrun.cryptocurrency.global.api.upbit.domain.UpbitMarket;
 import site.bitrun.cryptocurrency.global.api.upbit.service.UpbitService;
 import site.bitrun.cryptocurrency.repository.HoldCryptoRepository;
 import site.bitrun.cryptocurrency.service.HoldCryptoService;
-import site.bitrun.cryptocurrency.session.SessionConst;
+import site.bitrun.cryptocurrency.constants.session.SessionConst;
 
 @RestController
 @RequiredArgsConstructor

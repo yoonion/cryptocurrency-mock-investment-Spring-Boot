@@ -2,19 +2,18 @@ package site.bitrun.cryptocurrency.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-import site.bitrun.cryptocurrency.global.api.coinmarketcap.domain.CryptoRank;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import site.bitrun.cryptocurrency.domain.Member;
 import site.bitrun.cryptocurrency.dto.MemberLoginForm;
 import site.bitrun.cryptocurrency.dto.MemberRegisterForm;
+import site.bitrun.cryptocurrency.global.api.coinmarketcap.domain.CryptoRank;
 import site.bitrun.cryptocurrency.global.api.coinmarketcap.service.CryptoService;
-import site.bitrun.cryptocurrency.global.api.upbit.service.UpbitService;
 import site.bitrun.cryptocurrency.service.MemberService;
 
 import java.util.List;
@@ -26,8 +25,6 @@ public class BasicController {
 
     private final MemberService memberService;
     private final CryptoService cryptoService;
-    private final UpbitService upbitService;
-    private final PasswordEncoder passwordEncoder;
 
     // 메인 페이지
     @GetMapping("/")
@@ -60,15 +57,13 @@ public class BasicController {
 
         // 중복 체크
         // true 일 경우 중복
-        if (memberService.memberCheckDuplicate(memberRegisterForm.getEmail())) {
+        if (memberService.isMemberDuplicate(memberRegisterForm.getEmail())) {
             bindingResult.reject("emailDuplicate", "이미 존재하는 회원입니다."); // global error
             return "member/memberRegisterForm";
         }
 
         // 새로운 회원 가입
-        String encodePassword = passwordEncoder.encode(memberRegisterForm.getPassword()); // 비밀번호 암호화
-        Member newMember = new Member(memberRegisterForm.getUsername(), memberRegisterForm.getEmail(), encodePassword, 10000000);
-        memberService.memberRegister(newMember);
+        memberService.memberRegister(memberRegisterForm);
 
         // 성공했다면 로그인까지 처리한다.
         memberService.memberLogin(memberRegisterForm.getEmail(), memberRegisterForm.getPassword(), request);

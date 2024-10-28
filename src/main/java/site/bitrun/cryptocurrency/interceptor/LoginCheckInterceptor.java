@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.HandlerInterceptor;
-import site.bitrun.cryptocurrency.session.SessionConst;
+import site.bitrun.cryptocurrency.constants.session.SessionConst;
 
 @Slf4j
 public class LoginCheckInterceptor implements HandlerInterceptor {
